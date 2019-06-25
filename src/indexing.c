@@ -20,6 +20,7 @@
 
 #include <h3/h3api.h> // Main H3 include
 #include "extension.h"
+#include <math.h>
 
 // Indexes the location at the specified resolution
 PG_FUNCTION_INFO_V1(h3_geo_to_h3);
