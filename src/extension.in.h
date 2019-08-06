@@ -62,6 +62,11 @@ typedef struct
 #define PG_GETARG_H3INDEX(n) DatumGetH3Index(PG_GETARG_DATUM(n))
 #define PG_RETURN_H3INDEX(x) return H3IndexGetDatum(x)
 
+/* GiST macros */
+
+#define DatumGetH3IndexP(x) (H3Index *) DatumGetPointer(x)
+#define H3IndexPGetDatum(x) PointerGetDatum(x)
+
 /*	helper functions to return sets from user fctx */
 Datum		srf_return_h3_indexes_from_user_fctx(PG_FUNCTION_ARGS);
 Datum		srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
