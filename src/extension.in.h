@@ -33,7 +33,9 @@ typedef struct
 /* base type in postgres is Datum, and we cannot fit 8 bytes on all platforms
    so we use pointers */
 #define PG_RETURN_H3_INDEX_P(x) PG_RETURN_POINTER(x)
-#define PG_GETARG_H3_INDEX_P(x) (H3Index *)PG_GETARG_POINTER(x)
+#define PG_GETARG_H3_INDEX_P(x) (H3Index *) PG_GETARG_POINTER(x)
+#define DatumGetH3IndexP(x) (H3Index *) DatumGetPointer(x)
+#define H3IndexPGetDatum(x) PointerGetDatum(x)
 
 /*	helper functions to return sets from user fctx */
 Datum		srf_return_h3_indexes_from_user_fctx(PG_FUNCTION_ARGS);
@@ -63,7 +65,7 @@ Datum		srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
 	)
 
 #define DEBUG(msg, ...)			   \
-	ereport(DEBUG1, (			   \
+	ereport(WARNING, (				\
 		errmsg(msg, ##__VA_ARGS__) \
 	))
 
