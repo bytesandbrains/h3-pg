@@ -18,7 +18,7 @@
 #include <fmgr.h>     // PG_FUNCTION_ARGS, etc.
 #include <funcapi.h>  // Definitions for functions which return sets
 
-#include <h3/h3api.h> // Main H3 include
+#include <h3api.h> // Main H3 include
 #include "extension.h"
 
 // Average hexagon area in square (kilo)meters at the given resolution

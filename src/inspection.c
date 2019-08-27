@@ -20,7 +20,7 @@
 #include <utils/lsyscache.h> // get_typlenbyvalalign
 #include <catalog/pg_type.h>
 
-#include <h3/h3api.h> // Main H3 include
+#include <h3api.h> // Main H3 include
 #include "extension.h"
 
 // Returns the resolution of the index

@@ -10,11 +10,10 @@ test/results
 # Generated
 sql/*.sql
 src/extension.h
-test/expected/install.out
-test/expected/binding-functions.out
-test/sql/binding-functions.sql
+test/expected/ci-*.out
+test/sql/ci-*.sql
 libh3-*/
-h3-*.zip
+h3-*.tar.gz
 
 # IDEs
 .vscode

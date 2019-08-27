@@ -2,7 +2,7 @@
 
 We provide a Dockerfile for development without installation of H3 and Postgres. The following requires that your system has `docker` installed.
 
-Simply run `./docker/build.sh`.
+Simply run `./scripts/test.sh`.
 
 It will mount the code as a volume, and also mount the test output directory,
 so output can be inspected. It might be needed to `chmod` the repo directory if you get permission denied errors.
@@ -16,5 +16,5 @@ so output can be inspected. It might be needed to `chmod` the repo directory if 
     * Draft new release "vX.Y.Z"
     * Copy CHANGELOG.md entry into release description
 3. Distribute the extension on PGXN
-    * Run `make distribute` to zip the release
+    * Run `make dist` to package the release
     * Upload the distribution on [PGXN Manager](https://manager.pgxn.org/) (username: `bytesandbrains`)

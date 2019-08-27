@@ -17,7 +17,7 @@
 #ifndef PGH3_H
 #define PGH3_H
 
-#include <h3/h3api.h> // Main H3 include
+#include <h3api.h> // Main H3 include
 
 typedef struct
 {

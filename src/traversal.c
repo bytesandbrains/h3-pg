@@ -21,7 +21,7 @@
 #include <utils/array.h>         // Arrays
 #include <utils/geo_decls.h>     // making native points
 
-#include <h3/h3api.h> // Main H3 include
+#include <h3api.h> // Main H3 include
 #include "extension.h"
 
 /**

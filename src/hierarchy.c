@@ -20,7 +20,7 @@
 #include <utils/array.h>    // Arrays
 #include <utils/memutils.h> // MaxAllocSize
 
-#include <h3/h3api.h> // Main H3 include
+#include <h3api.h> // Main H3 include
 #include "extension.h"
 
 // Returns the parent (coarser) index containing given index

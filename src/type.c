@@ -19,7 +19,7 @@
 #include <utils/geo_decls.h> // making native points
 #include <access/hash.h>     // hash_any
 
-#include <h3/h3api.h> // Main H3 include
+#include <h3api.h> // Main H3 include
 #include "extension.h"
 
 Datum h3_string_to_h3(PG_FUNCTION_ARGS);
