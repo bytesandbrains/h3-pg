@@ -1,0 +1,39 @@
+name: Test
+
+on: [push]
+
+jobs:
+  Ubuntu:
+    name: postgres-${{ matrix.postgresql }} on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, ubuntu-18.04]
+        postgresql: [10, 11]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Fix HTTPS support on Xenial
+        if: matrix.os == 'ubuntu-16.04'
+        run: sudo apt-get update && sudo apt-get install -y gnupg-curl
+      - name: Add PostgreSQL APT repository
+        run: |
+          source /etc/lsb-release
+          sudo apt-key adv --fetch-keys https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb http://apt.postgresql.org/pub/repos/apt/ ${DISTRIB_CODENAME}-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list
+      - name: Install PostgreSQL/PostGIS and other dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends \
+          build-essential cmake git pgxnclient \
+          postgresql-${{ matrix.postgresql }} \
+          postgresql-server-dev-${{ matrix.postgresql }} \
+          postgresql-${{ matrix.postgresql }}-postgis-2.5 \
+          postgresql-${{ matrix.postgresql }}-postgis-2.5-scripts
+      - name: Pack extension
+        run: make dist
+      - name: Start database service
+        run: sudo service postgresql start
+      - name: Run tests
+        run: |
+          sudo pgxnclient install ./h3-dist.tar.gz && \
+          sudo -u postgres pgxnclient load ./h3-dist.tar.gz && \
+          sudo -u postgres pgxnclient check ./h3-dist.tar.gz

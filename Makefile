@@ -108,5 +108,5 @@ install: $(SQL_UPDATETEST)
 #$(OBJS): $(LIBH3_DIR)/binding-functions
 
 # zip up for distribution
-distribute: clean
-	git archive --format zip --prefix=h3-$(EXTVERSION)/ --output h3-$(EXTVERSION).zip master
+dist: clean
+	git archive --prefix=h3-$(EXTVERSION)/ --output h3-dist.tar.gz HEAD
