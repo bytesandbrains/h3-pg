@@ -24,6 +24,10 @@ CREATE OR REPLACE FUNCTION h3index_in(cstring) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE OR REPLACE FUNCTION h3index_out(h3index) RETURNS cstring
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3index_to_bigint(h3index) RETURNS bigint
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION bigint_to_h3index(bigint) RETURNS h3index
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE OR REPLACE FUNCTION h3index_eq(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE OR REPLACE FUNCTION h3index_ne(h3index, h3index) RETURNS boolean
@@ -49,7 +53,7 @@ CREATE TYPE h3index (
   ALIGNMENT      = double
 );
 
--- pperators
+-- operators
 CREATE OPERATOR = (
   LEFTARG = h3index,
   RIGHTARG = h3index,
@@ -121,3 +125,7 @@ CREATE OPERATOR CLASS hash_h3index_ops DEFAULT FOR TYPE h3index
     USING hash AS
         OPERATOR        1       = ,
         FUNCTION        1       h3index_hash(h3index);
+
+-- type casts
+CREATE CAST (h3index AS bigint) WITH FUNCTION h3index_to_bigint(h3index);
+CREATE CAST (bigint AS h3index) WITH FUNCTION bigint_to_h3index(bigint);

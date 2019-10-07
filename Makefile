@@ -126,15 +126,15 @@ EXTRA_BINDING_FUNCTIONS = \
 
 # rules for testing the update path against full install
 test/sql/ci-install.sql:
-	echo "\df h3*" > $@
+	echo "\df *h3*" > $@
 test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -d pg_regress -c "CREATE EXTENSION postgis;"
 	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION '0.1.0';"
 	psql -d pg_regress -c "ALTER EXTENSION h3 UPDATE;"
-	echo "\df h3*" > $@
-	psql -d pg_regress -c "\df h3*" >> $@
+	echo "\df *h3*" > $@
+	psql -d pg_regress -c "\df *h3*" >> $@
 	psql -c "DROP DATABASE pg_regress;"
 
 # generate expected bindings from h3 generated binding function list

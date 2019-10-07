@@ -1,5 +1,6 @@
 \pset tuples_only on
 \set string '\'801dfffffffffff\''
+\set asbigint 576988517884755967
 \set hexagon ':string::h3index'
 \set pentagon '\'844c001ffffffff\'::h3index'
 
@@ -31,3 +32,10 @@ SELECT hex = :hexagon FROM (
 SELECT COUNT(hex) = 122 FROM (
     SELECT hex FROM h3_test_type WHERE hex IN (SELECT h3_get_res_0_indexes())
 ) q;
+
+--
+-- TEST bigint casting
+--
+SELECT :asbigint = :hexagon::bigint;
+
+SELECT :hexagon = :asbigint::h3index;

@@ -38,6 +38,22 @@ Datum h3index_out(PG_FUNCTION_ARGS)
     return h3_to_string(fcinfo);
 }
 
+PG_FUNCTION_INFO_V1(h3index_to_bigint);
+Datum h3index_to_bigint(PG_FUNCTION_ARGS)
+{
+    H3Index *h3index = PG_GETARG_H3_INDEX_P(0);
+    PG_RETURN_INT64(*h3index);
+}
+
+PG_FUNCTION_INFO_V1(bigint_to_h3index);
+Datum bigint_to_h3index(PG_FUNCTION_ARGS)
+{
+    int64 bigint = PG_GETARG_INT64(0);
+    H3Index *h3index = palloc(sizeof(H3Index));
+    *h3index = bigint;
+    PG_RETURN_H3_INDEX_P(h3index);
+}
+
 PG_FUNCTION_INFO_V1(h3index_eq);
 Datum h3index_eq(PG_FUNCTION_ARGS)
 {

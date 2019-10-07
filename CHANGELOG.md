@@ -14,6 +14,10 @@ Because H3-pg is versioned in lockstep with the H3 core library, please
 avoid adding features or APIs which do not map onto the
 [H3 core API](https://uber.github.io/h3/#/documentation/api-reference/).
 
+## [Unreleased]
+### Added
+- Casting to and from `bigint`.
+
 ## [3.5.0] - 2019-08-01
 ### Added
 - `h3_get_faces` function to find icosahedron faces for an index.
