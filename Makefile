@@ -101,7 +101,7 @@ $(SQL_FULLINSTALL): $(sort $(SQL_INSTALLS))
 
 # package for distribution
 dist:
-	git archive --prefix=h3-$(EXTVERSION)/ --output h3-dist.tar.gz HEAD
+	git archive --prefix=h3-$(EXTVERSION)/ --output h3-dist.zip HEAD
 
 ###########################################################################
 # Extra CI testing targets

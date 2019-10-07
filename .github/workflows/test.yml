@@ -10,4 +10,4 @@ jobs:
       - run: make dist
       - uses: ./.github/actions/test
         with:
-          distribution: "./h3-dist.tar.gz"
+          distribution: "./h3-dist.zip"

@@ -13,7 +13,7 @@ src/extension.h
 test/expected/ci-*.out
 test/sql/ci-*.sql
 libh3-*/
-h3-*.tar.gz
+h3-*.zip
 *.BAK
 
 # IDEs
