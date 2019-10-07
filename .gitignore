@@ -14,6 +14,7 @@ test/expected/ci-*.out
 test/sql/ci-*.sql
 libh3-*/
 h3-*.tar.gz
+*.BAK
 
 # IDEs
 .vscode

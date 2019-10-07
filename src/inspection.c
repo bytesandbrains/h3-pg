@@ -25,8 +25,6 @@
 
 PG_FUNCTION_INFO_V1(h3_get_resolution);
 PG_FUNCTION_INFO_V1(h3_get_base_cell);
-PG_FUNCTION_INFO_V1(h3_string_to_h3);
-PG_FUNCTION_INFO_V1(h3_to_string);
 PG_FUNCTION_INFO_V1(h3_is_valid);
 PG_FUNCTION_INFO_V1(h3_is_res_class_iii);
 PG_FUNCTION_INFO_V1(h3_is_pentagon);
@@ -50,35 +48,6 @@ h3_get_base_cell(PG_FUNCTION_ARGS)
 	int			base_cell_number = h3GetBaseCell(*hex);
 
 	PG_RETURN_INT32(base_cell_number);
-}
-
-/* Converts the string representation to internal representation */
-Datum
-h3_string_to_h3(PG_FUNCTION_ARGS)
-{
-	H3Index    *hex;
-	char	   *str;
-
-	str = PG_GETARG_CSTRING(0);
-	hex = palloc(sizeof(H3Index));
-	*hex = stringToH3(str);
-
-	PG_RETURN_H3_INDEX_P(hex);
-}
-
-/*
- * Converts the internal representation of the index
- * to the string representation
- */
-Datum
-h3_to_string(PG_FUNCTION_ARGS)
-{
-	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
-	char	   *str = palloc(17 * sizeof(char));
-
-	h3ToString(*hex, str, 17);
-
-	PG_RETURN_CSTRING(str);
 }
 
 /* Returns true if this is a valid H3 index */

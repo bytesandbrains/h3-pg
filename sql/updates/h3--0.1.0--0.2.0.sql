@@ -40,14 +40,6 @@ CREATE OR REPLACE FUNCTION h3_h3_get_base_cell(h3index) RETURNS integer
     AS 'h3', 'h3_get_base_cell' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_h3_get_base_cell(h3index) IS
     'Returns the base cell number of the index';    
-CREATE OR REPLACE FUNCTION h3_string_to_h3(cstring) RETURNS h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_string_to_h3(cstring) IS
-    'Converts the string representation to H3Index representation';
-CREATE OR REPLACE FUNCTION h3_h3_to_string(h3index) RETURNS cstring
-    AS 'h3', 'h3_to_string' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_h3_to_string(h3index) IS
-    'Converts the H3Index representation of the index to the string representation';
 CREATE OR REPLACE FUNCTION h3_h3_is_valid(h3index) RETURNS bool
     AS 'h3', 'h3_is_valid' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_h3_is_valid(h3index) IS
@@ -177,3 +169,8 @@ CREATE OR REPLACE FUNCTION h3_hex_range_distances(h3index, k integer, OUT h3inde
     AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE OR REPLACE FUNCTION h3_hex_ranges(h3index[], k integer) RETURNS SETOF h3index
     AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- DEPRECATED in v3.6.0
+CREATE OR REPLACE FUNCTION h3_string_to_h3(cstring) RETURNS h3index
+    AS 'h3', 'h3index_in' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_h3_to_string(h3index) RETURNS cstring
+    AS 'h3', 'h3index_out' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;

@@ -15,7 +15,7 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO '3.5.1'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3 UPDATE TO '3.6.0'" to load this file. \quit
 
 CREATE OR REPLACE FUNCTION h3index_to_bigint(h3index) RETURNS bigint
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
@@ -25,3 +25,7 @@ CREATE OR REPLACE FUNCTION bigint_to_h3index(bigint) RETURNS h3index
 -- type casts
 CREATE CAST (h3index AS bigint) WITH FUNCTION h3index_to_bigint(h3index);
 CREATE CAST (bigint AS h3index) WITH FUNCTION bigint_to_h3index(bigint);
+
+-- string conversion already provided by type itself
+DROP FUNCTION IF EXISTS h3_to_string(h3index);
+DROP FUNCTION IF EXISTS h3_string_to_h3(cstring);

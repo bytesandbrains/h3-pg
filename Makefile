@@ -19,7 +19,7 @@ EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
 # h3 core library version to clone and statically link
-LIBH3_VERSION = v3.5.0
+LIBH3_VERSION = v3.6.0
 # directory that h3 core repository is cloned into
 LIBH3_SOURCE = libh3-$(LIBH3_VERSION)
 # h3 static library location
@@ -105,7 +105,7 @@ dist:
 # Extra CI testing targets
 ###########################################################################
 
-format:
+format: clean
 	pgindent
 
 # functions which we have decided not to provide bindings for
@@ -120,7 +120,9 @@ EXTRA_BINDING_FUNCTIONS = \
 	to_geo_boundary_geography \
 	to_geo_boundary_geometry \
 	to_geography \
-	to_geometry
+	to_geometry \
+	to_string \
+	string_to_h3
 
 /tmp/excluded-functions:
 	echo "$(EXCLUDED_BINDING_FUNCTIONS)" | tr " " "\n" > $@

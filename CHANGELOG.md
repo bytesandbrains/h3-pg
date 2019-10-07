@@ -17,6 +17,7 @@ avoid adding features or APIs which do not map onto the
 ## [Unreleased]
 ### Added
 - Casting to and from `bigint`.
+- Make target for `pgindent` (used for formatting c our code)
 
 ## [3.5.0] - 2019-08-01
 ### Added

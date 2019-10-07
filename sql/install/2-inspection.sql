@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2019 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,16 +25,6 @@ CREATE OR REPLACE FUNCTION h3_get_base_cell(h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_base_cell(h3index) IS
 'Returns the base cell number of the index';
-
-CREATE OR REPLACE FUNCTION h3_string_to_h3(cstring) RETURNS h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_string_to_h3(cstring) IS
-'Converts the string representation to H3Index representation';
-
-CREATE OR REPLACE FUNCTION h3_to_string(h3index) RETURNS cstring
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_to_string(h3index) IS
-'Converts the H3Index representation of the index to the string representation';
 
 CREATE OR REPLACE FUNCTION h3_is_valid(h3index) RETURNS bool
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;

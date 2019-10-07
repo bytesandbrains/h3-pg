@@ -35,19 +35,26 @@ PG_FUNCTION_INFO_V1(h3index_ge);
 PG_FUNCTION_INFO_V1(h3index_cmp);
 PG_FUNCTION_INFO_V1(h3index_hash);
 
-Datum		h3_string_to_h3(PG_FUNCTION_ARGS);
-Datum		h3_to_string(PG_FUNCTION_ARGS);
-
 Datum
 h3index_in(PG_FUNCTION_ARGS)
 {
-	return h3_string_to_h3(fcinfo);
+	char	   *str = PG_GETARG_CSTRING(0);
+	H3Index    *hex = palloc(sizeof(H3Index));
+
+	*hex = stringToH3(str);
+
+	PG_RETURN_H3_INDEX_P(hex);
 }
 
 Datum
 h3index_out(PG_FUNCTION_ARGS)
 {
-	return h3_to_string(fcinfo);
+	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
+	char	   *str = palloc(17 * sizeof(char));
+
+	h3ToString(*hex, str, 17);
+
+	PG_RETURN_CSTRING(str);
 }
 
 Datum
