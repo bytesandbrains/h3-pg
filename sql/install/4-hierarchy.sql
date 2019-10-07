@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2019 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,11 @@ CREATE OR REPLACE FUNCTION h3_to_children(h3index, resolution integer DEFAULT -1
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_children(index h3index, resolution integer) IS
 'Returns the set of children of the given index';
+
+CREATE OR REPLACE FUNCTION h3_to_center_child(h3index, resolution integer DEFAULT -1) RETURNS h3index
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_to_parent(h3index, resolution integer) IS
+'Returns the center child (finer) index contained by input index at given resolution';
 
 CREATE OR REPLACE FUNCTION h3_compact(h3index[]) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;

@@ -25,6 +25,7 @@ PG_FUNCTION_INFO_V1(h3_hex_area);
 PG_FUNCTION_INFO_V1(h3_edge_length);
 PG_FUNCTION_INFO_V1(h3_num_hexagons);
 PG_FUNCTION_INFO_V1(h3_get_res_0_indexes);
+PG_FUNCTION_INFO_V1(h3_get_pentagon_indexes);
 
 /* Average hexagon area in square (kilo)meters at the given resolution */
 Datum
@@ -84,6 +85,30 @@ h3_get_res_0_indexes(PG_FUNCTION_ARGS)
 		H3Index    *indexes = palloc(sizeof(H3Index) * count);
 
 		getRes0Indexes(indexes);
+
+		funcctx->user_fctx = indexes;
+		funcctx->max_calls = count;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
+}
+
+/* All the pentagon H3 indexes at the specified resolution */
+Datum
+h3_get_pentagon_indexes(PG_FUNCTION_ARGS)
+{
+	if (SRF_IS_FIRSTCALL())
+	{
+		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+		MemoryContext oldcontext =
+		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		int			resolution = PG_GETARG_INT32(0);
+		int			count = pentagonIndexCount();
+		H3Index    *indexes = palloc(sizeof(H3Index) * count);
+
+		getPentagonIndexes(resolution, indexes);
 
 		funcctx->user_fctx = indexes;
 		funcctx->max_calls = count;

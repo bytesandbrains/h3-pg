@@ -57,6 +57,8 @@ EXTRA_CLEAN += \
 	$(wildcard test/sql/ci-*.sql) \
 	$(wildcard test/expected/ci-*.out) \
 	$(wildcard *.BAK) \
+	/tmp/excluded-functions \
+	/tmp/excluded-functions \
 	test/regression.diffs test/regression.out test/results \
 	h3-*.zip
 
@@ -111,7 +113,9 @@ format: clean
 # functions which we have decided not to provide bindings for
 EXCLUDED_BINDING_FUNCTIONS = \
 	degs_to_rads \
-	rads_to_degs
+	rads_to_degs \
+	to_string \
+	string_to_h3
 
 # functions provided that are not part of expected binding functions
 EXTRA_BINDING_FUNCTIONS = \
@@ -120,9 +124,7 @@ EXTRA_BINDING_FUNCTIONS = \
 	to_geo_boundary_geography \
 	to_geo_boundary_geometry \
 	to_geography \
-	to_geometry \
-	to_string \
-	string_to_h3
+	to_geometry
 
 /tmp/excluded-functions:
 	echo "$(EXCLUDED_BINDING_FUNCTIONS)" | tr " " "\n" > $@

@@ -35,3 +35,8 @@ CREATE OR REPLACE FUNCTION h3_get_res_0_indexes() RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_res_0_indexes() IS
 'Returns all 122 resolution 0 indexes.';
+
+CREATE OR REPLACE FUNCTION h3_get_pentagon_indexes(resolution integer) RETURNS SETOF h3index
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_get_res_0_indexes() IS
+'All the pentagon H3 indexes at the specified resolution.';

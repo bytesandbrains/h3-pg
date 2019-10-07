@@ -35,3 +35,9 @@ SELECT h3_num_hexagons(15) = 569707381193162;
 SELECT COUNT(*) = 122 FROM (SELECT h3_get_res_0_indexes()) q;
  t
 
+--
+-- TEST h3_get_pentagon_indexes
+--
+SELECT COUNT(*) = 12 FROM (SELECT h3_get_pentagon_indexes(6)) q; 
+ t
+

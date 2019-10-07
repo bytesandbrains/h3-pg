@@ -23,8 +23,9 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
-PG_FUNCTION_INFO_V1(h3_to_children);
 PG_FUNCTION_INFO_V1(h3_to_parent);
+PG_FUNCTION_INFO_V1(h3_to_children);
+PG_FUNCTION_INFO_V1(h3_to_center_child);
 PG_FUNCTION_INFO_V1(h3_compact);
 PG_FUNCTION_INFO_V1(h3_uncompact);
 
@@ -115,6 +116,37 @@ h3_to_children(PG_FUNCTION_ARGS)
 	}
 
 	SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
+}
+
+/* Returns the center child (finer) index contained by input index at given resolution */
+Datum
+h3_to_center_child(PG_FUNCTION_ARGS)
+{
+	H3Index    *child;
+
+	/* get function arguments */
+	H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+	int			childRes = PG_GETARG_INT32(1);
+	int			parentRes = h3GetResolution(*origin);
+
+	if (childRes == -1)
+	{
+		/* resolution parameter not set */
+		childRes = parentRes + 1;
+	}
+	ASSERT(
+		   childRes >= parentRes,
+		   ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE,
+	"Requested child resolution %d is coarser than input index resolution %d",
+		   childRes, parentRes
+		);
+
+	/* get child */
+	child = palloc(sizeof(H3Index));
+	*child = h3ToCenterChild(*origin, childRes);
+	ASSERT_EXTERNAL(*child, "Could not generate center child");
+
+	PG_RETURN_H3_INDEX_P(child);
 }
 
 Datum

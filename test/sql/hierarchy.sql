@@ -6,7 +6,7 @@
 \set resolution 3
 
 --
--- TEST h3_to_children and h3_to_parent
+-- TEST h3_to_children, h3_to_parent and h3_to_center_chil
 --
 
 -- all parents of one the children of a hexagon, must be the original hexagon
@@ -45,6 +45,9 @@ SELECT h3_get_resolution(h3_to_parent(:hexagon)) = :resolution -1;
 SELECT bool_and(r = :resolution +1) FROM (
 	SELECT h3_get_resolution(h3_to_children(:hexagon)) r
 ) q;
+
+-- parent of center child should be original index
+SELECT :hexagon = h3_to_parent(h3_to_center_child(:hexagon, 15), :resolution);
 
 --
 -- TEST h3_compact and h3_uncompact

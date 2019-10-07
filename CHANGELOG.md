@@ -16,6 +16,8 @@ avoid adding features or APIs which do not map onto the
 
 ## [Unreleased]
 ### Added
+- `h3_to_center_child` function to find center child at given resolution.
+- `h3_get_pentagon_indexes` function to find pentagons at given resolution.
 - Casting to and from `bigint`.
 - Make target for `pgindent` (used for formatting c our code)
 
