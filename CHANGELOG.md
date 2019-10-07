@@ -14,12 +14,14 @@ Because H3-pg is versioned in lockstep with the H3 core library, please
 avoid adding features or APIs which do not map onto the
 [H3 core API](https://uber.github.io/h3/#/documentation/api-reference/).
 
-## [Unreleased]
+## [3.6.0] - 2019-10-07
 ### Added
 - `h3_to_center_child` function to find center child at given resolution.
 - `h3_get_pentagon_indexes` function to find pentagons at given resolution.
 - Casting to and from `bigint`.
 - Make target for `pgindent` (used for formatting c our code)
+### Changed
+- Bump `h3` to `3.6.0`.
 
 ## [3.5.0] - 2019-08-01
 ### Added
@@ -102,7 +104,8 @@ avoid adding features or APIs which do not map onto the
 ### Added
 - First public release.
 
-[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.5.0...HEAD
+[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...HEAD
+[3.6.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.5.0...v3.6.0
 [3.5.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.1...v3.5.0
 [3.4.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.6...v3.4.0

@@ -57,7 +57,7 @@ EXTRA_CLEAN += \
 	$(wildcard test/sql/ci-*.sql) \
 	$(wildcard test/expected/ci-*.out) \
 	$(wildcard *.BAK) \
-	/tmp/excluded-functions \
+	/tmp/extra-functions \
 	/tmp/excluded-functions \
 	test/regression.diffs test/regression.out test/results \
 	h3-*.zip
