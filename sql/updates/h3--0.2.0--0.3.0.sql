@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2019 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,4 +97,4 @@ CREATE CAST (h3index AS geography) WITH FUNCTION h3_h3_to_geography(h3index);
 
 -- DEPRECATED in v1.0.0
 CREATE OR REPLACE FUNCTION h3_haversine_distance(h3index, h3index) RETURNS double precision
-    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    AS 'h3', 'h3index_in' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
