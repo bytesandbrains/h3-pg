@@ -1,12 +1,12 @@
 /*
- * Copyright 2018 Bytes & Brains
- * 
+ * Copyright 2018-2019 Bytes & Brains
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *	   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,53 +14,25 @@
  * limitations under the License.
  */
 
-#include <postgres.h>            // Datum, etc.
-#include <fmgr.h>                // PG_FUNCTION_ARGS, etc.
-#include <funcapi.h>             // Definitions for functions which return sets
+#include <postgres.h>			 // Datum, etc.
+#include <fmgr.h>				 // PG_FUNCTION_ARGS, etc.
+#include <funcapi.h>			 // Definitions for functions which return sets
 #include <access/htup_details.h> // Needed to return HeapTuple
-#include <utils/array.h>         // Arrays
-#include <utils/geo_decls.h>     // making native points
+#include <utils/array.h>		 // Arrays
+#include <utils/geo_decls.h>	 // making native points
 
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
-/**
- * k-rings produces indices within k distance of the origin index.
- *
- * k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and
- * all neighboring indices, and so on.
- *
- * Output is placed in the provided array in no particular order.
- * There may be fewer elements in output, as can happen when crossing a
- * pentagon.
- */
 PG_FUNCTION_INFO_V1(h3_k_ring);
-Datum h3_k_ring(PG_FUNCTION_ARGS)
-{
-    if (SRF_IS_FIRSTCALL())
-    {
-        FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
-        MemoryContext oldcontext =
-            MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+PG_FUNCTION_INFO_V1(h3_k_ring_distances);
+PG_FUNCTION_INFO_V1(h3_hex_ring);
+PG_FUNCTION_INFO_V1(h3_distance);
+PG_FUNCTION_INFO_V1(h3_line);
+PG_FUNCTION_INFO_V1(h3_experimental_h3_to_local_ij);
+PG_FUNCTION_INFO_V1(h3_experimental_local_ij_to_h3);
 
-        // get function arguments
-        H3Index *origin = PG_GETARG_H3_INDEX_P(0);
-        int k = PG_GETARG_INT32(1);
-
-        // produce indices into allocated memory
-        int maxSize = maxKringSize(k);
-        H3Index *indices = palloc(maxSize * sizeof(H3Index));
-        kRing(*origin, k, indices);
-
-        funcctx->user_fctx = indices;
-        funcctx->max_calls = maxSize;
-        MemoryContextSwitchTo(oldcontext);
-    }
-
-    SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
-}
-
-/**
+/*
  * k-rings produces indices within k distance of the origin index.
  *
  * k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and
@@ -70,83 +42,127 @@ Datum h3_k_ring(PG_FUNCTION_ARGS)
  * There may be fewer elements in output, as can happen when crossing a
  * pentagon.
  */
-PG_FUNCTION_INFO_V1(h3_k_ring_distances);
-Datum h3_k_ring_distances(PG_FUNCTION_ARGS)
+Datum
+h3_k_ring(PG_FUNCTION_ARGS)
 {
-    if (SRF_IS_FIRSTCALL())
-    {
-        FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
-        MemoryContext oldcontext =
-            MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
-        TupleDesc tuple_desc;
+	if (SRF_IS_FIRSTCALL())
+	{
+		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+		MemoryContext oldcontext =
+		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-        // get function arguments
-        H3Index *origin = PG_GETARG_H3_INDEX_P(0);
-        int k = PG_GETARG_INT32(1);
+		/* get function arguments */
+		H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+		int			k = PG_GETARG_INT32(1);
 
-        // Allocate memory for the indices, the distances and the tuple used for
-        // returning
-        int maxSize = maxKringSize(k);
-        hexDistanceTuple *user_fctx = palloc(sizeof(hexDistanceTuple));
-        user_fctx->indices = palloc(maxSize * sizeof(H3Index));
-        user_fctx->distances = palloc(maxSize * sizeof(int));
+		/* produce indices into allocated memory */
+		int			maxSize = maxKringSize(k);
+		H3Index    *indices = palloc(maxSize * sizeof(H3Index));
 
-        kRingDistances(*origin, k, user_fctx->indices, user_fctx->distances);
+		kRing(*origin, k, indices);
 
-        ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
+		funcctx->user_fctx = indices;
+		funcctx->max_calls = maxSize;
+		MemoryContextSwitchTo(oldcontext);
+	}
 
-        funcctx->tuple_desc = BlessTupleDesc(tuple_desc);
-        funcctx->max_calls = maxSize;
-        funcctx->user_fctx = user_fctx;
-
-        MemoryContextSwitchTo(oldcontext);
-    }
-
-    SRF_RETURN_H3_INDEX_DISTANCES_FROM_USER_FCTX();
+	SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
 }
 
-/**
+/*
+ * k-rings produces indices within k distance of the origin index.
+ *
+ * k-ring 0 is defined as the origin index, k-ring 1 is defined as k-ring 0 and
+ * all neighboring indices, and so on.
+ *
+ * Output is placed in the provided array in no particular order.
+ * There may be fewer elements in output, as can happen when crossing a
+ * pentagon.
+ */
+Datum
+h3_k_ring_distances(PG_FUNCTION_ARGS)
+{
+	if (SRF_IS_FIRSTCALL())
+	{
+		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+		MemoryContext oldcontext =
+		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+		TupleDesc	tuple_desc;
+
+		/* get function arguments */
+		H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+		int			k = PG_GETARG_INT32(1);
+
+		/*
+		 * Allocate memory for the indices, the distances and the tuple used
+		 * for
+		 */
+		/* returning */
+		int			maxSize = maxKringSize(k);
+		hexDistanceTuple *user_fctx = palloc(sizeof(hexDistanceTuple));
+
+		user_fctx->indices = palloc(maxSize * sizeof(H3Index));
+		user_fctx->distances = palloc(maxSize * sizeof(int));
+
+		kRingDistances(*origin, k, user_fctx->indices, user_fctx->distances);
+
+		ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
+
+		funcctx->tuple_desc = BlessTupleDesc(tuple_desc);
+		funcctx->max_calls = maxSize;
+		funcctx->user_fctx = user_fctx;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	SRF_RETURN_H3_INDEX_DISTANCES_FROM_USER_FCTX();
+}
+
+/*
  * Produces the hollow hexagonal ring centered at origin with sides of length k.
  *
  * Throws if pentagonal distortion was encountered.
  */
-PG_FUNCTION_INFO_V1(h3_hex_ring);
-Datum h3_hex_ring(PG_FUNCTION_ARGS)
+Datum
+h3_hex_ring(PG_FUNCTION_ARGS)
 {
-    if (SRF_IS_FIRSTCALL())
-    {
-        int result;
-        FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
-        MemoryContext oldcontext =
-            MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+	if (SRF_IS_FIRSTCALL())
+	{
+		int			result;
+		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+		MemoryContext oldcontext =
+		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-        // get function arguments
-        H3Index *indices;
-        H3Index *origin = PG_GETARG_H3_INDEX_P(0);
-        int k = PG_GETARG_INT32(1);
+		/* get function arguments */
+		H3Index    *indices;
+		H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+		int			k = PG_GETARG_INT32(1);
 
-        // Find the size of the ring. If k is 0, then it is the same as k_ring.
-        // If k is larger than 0, the ring is the size of the circle with k, minus
-        // the circle with k-1
-        int maxSize = maxKringSize(k);
-        if (k > 0)
-        {
-            maxSize -= maxKringSize(k - 1);
-        }
-        indices = palloc(maxSize * sizeof(H3Index));
+		/*
+		 * Find the size of the ring. If k is 0, then it is the same as
+		 * k_ring.
+		 *
+		 * If k is larger than 0, the ring is the size of the circle with k,
+		 * minus the circle with k-1
+		 */
+		int			maxSize = maxKringSize(k);
 
-        result = hexRing(*origin, k, indices);
-        ASSERT_EXTERNAL(result == 0, "Pentagonal distortion encountered, this method is undefined when it encounters pentagons");
+		if (k > 0)
+			maxSize -= maxKringSize(k - 1);
+		indices = palloc(maxSize * sizeof(H3Index));
 
-        funcctx->user_fctx = indices;
-        funcctx->max_calls = maxSize;
-        MemoryContextSwitchTo(oldcontext);
-    }
+		result = hexRing(*origin, k, indices);
+		ASSERT_EXTERNAL(result == 0, "Pentagonal distortion encountered, this method is undefined when it encounters pentagons");
 
-    SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
+		funcctx->user_fctx = indices;
+		funcctx->max_calls = maxSize;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
 }
 
-/**
+/*
  * Returns the distance in grid cells between the two indexes.
  *
  * Returns a negative number if finding the distance failed.
@@ -155,92 +171,95 @@ Datum h3_hex_ring(PG_FUNCTION_ARGS)
  * distortion. This is the same set of limitations as the local IJ coordinate
  * space functions.
  */
-PG_FUNCTION_INFO_V1(h3_distance);
-Datum h3_distance(PG_FUNCTION_ARGS)
+Datum
+h3_distance(PG_FUNCTION_ARGS)
 {
-    H3Index *originIndex = PG_GETARG_H3_INDEX_P(0);
-    H3Index *h3Index = PG_GETARG_H3_INDEX_P(1);
-    int distance;
+	H3Index    *originIndex = PG_GETARG_H3_INDEX_P(0);
+	H3Index    *h3Index = PG_GETARG_H3_INDEX_P(1);
+	int			distance;
 
-    distance = h3Distance(*originIndex, *h3Index);
+	distance = h3Distance(*originIndex, *h3Index);
 
-    PG_RETURN_INT32(distance);
+	PG_RETURN_INT32(distance);
 }
 
-/**
+/*
  * Given two H3 indexes, return the line of indexes between them (inclusive).
  *
  * This function may fail to find the line between two indexes, for
  * example if they are very far apart. It may also fail when finding
  * distances for indexes on opposite sides of a pentagon.
  */
-PG_FUNCTION_INFO_V1(h3_line);
-Datum h3_line(PG_FUNCTION_ARGS)
+Datum
+h3_line(PG_FUNCTION_ARGS)
 {
-    if (SRF_IS_FIRSTCALL())
-    {
-        FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
-        MemoryContext oldcontext =
-            MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+	if (SRF_IS_FIRSTCALL())
+	{
+		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+		MemoryContext oldcontext =
+		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-        // get function arguments
-        H3Index *start = PG_GETARG_H3_INDEX_P(0);
-        H3Index *end = PG_GETARG_H3_INDEX_P(1);
-        int size = h3LineSize(*start, *end);
-        H3Index *indices = palloc(size * sizeof(H3Index));
+		/* get function arguments */
+		H3Index    *start = PG_GETARG_H3_INDEX_P(0);
+		H3Index    *end = PG_GETARG_H3_INDEX_P(1);
+		int			size = h3LineSize(*start, *end);
+		H3Index    *indices = palloc(size * sizeof(H3Index));
 
-        int result = h3Line(*start, *end, indices);
-        ASSERT_EXTERNAL(result == 0, "Failed to generate line");
+		int			result = h3Line(*start, *end, indices);
 
-        funcctx->user_fctx = indices;
-        funcctx->max_calls = size;
-        MemoryContextSwitchTo(oldcontext);
-    }
+		ASSERT_EXTERNAL(result == 0, "Failed to generate line");
 
-    SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
+		funcctx->user_fctx = indices;
+		funcctx->max_calls = size;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
 }
 
-/**
+/*
  * Produces local IJ coordinates for an H3 index anchored by an origin.
  *
  * This function is experimental, and its output is not guaranteed to be
  * compatible across different versions of H3.
  */
-PG_FUNCTION_INFO_V1(h3_experimental_h3_to_local_ij);
-Datum h3_experimental_h3_to_local_ij(PG_FUNCTION_ARGS)
+Datum
+h3_experimental_h3_to_local_ij(PG_FUNCTION_ARGS)
 {
-    H3Index *origin = PG_GETARG_H3_INDEX_P(0);
-    H3Index *index = PG_GETARG_H3_INDEX_P(1);
+	H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+	H3Index    *index = PG_GETARG_H3_INDEX_P(1);
 
-    Point *point = (Point *)palloc(sizeof(Point));
-    CoordIJ coord;
-    experimentalH3ToLocalIj(*origin, *index, &coord);
+	Point	   *point = (Point *) palloc(sizeof(Point));
+	CoordIJ		coord;
 
-    point->x = coord.i;
-    point->y = coord.j;
+	experimentalH3ToLocalIj(*origin, *index, &coord);
 
-    PG_RETURN_POINT_P(point);
+	point->x = coord.i;
+	point->y = coord.j;
+
+	PG_RETURN_POINT_P(point);
 }
 
-/**
+/*
  * Produces an H3 index from local IJ coordinates anchored by an origin.
  *
  * This function is experimental, and its output is not guaranteed to be
  * compatible across different versions of H3.
  */
-PG_FUNCTION_INFO_V1(h3_experimental_local_ij_to_h3);
-Datum h3_experimental_local_ij_to_h3(PG_FUNCTION_ARGS)
+Datum
+h3_experimental_local_ij_to_h3(PG_FUNCTION_ARGS)
 {
-    H3Index *origin = PG_GETARG_H3_INDEX_P(0);
-    Point *point = PG_GETARG_POINT_P(1);
+	H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+	Point	   *point = PG_GETARG_POINT_P(1);
 
-    H3Index *index = (H3Index *)palloc(sizeof(H3Index));
+	H3Index    *index = (H3Index *) palloc(sizeof(H3Index));
 
-    CoordIJ coord;
-    coord.i = point->x;
-    coord.j = point->y;
+	CoordIJ		coord;
 
-    experimentalLocalIjToH3(*origin, &coord, index);
+	coord.i = point->x;
+	coord.j = point->y;
 
-    PG_RETURN_H3_INDEX_P(index);
+	experimentalLocalIjToH3(*origin, &coord, index);
+
+	PG_RETURN_H3_INDEX_P(index);
 }

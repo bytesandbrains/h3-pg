@@ -56,6 +56,7 @@ EXTRA_CLEAN += \
 	src/extension.h \
 	$(wildcard test/sql/ci-*.sql) \
 	$(wildcard test/expected/ci-*.out) \
+	$(wildcard *.BAK) \
 	test/regression.diffs test/regression.out test/results \
 	h3-*.zip
 
@@ -103,6 +104,9 @@ dist:
 ###########################################################################
 # Extra CI testing targets
 ###########################################################################
+
+format:
+	pgindent
 
 # functions which we have decided not to provide bindings for
 EXCLUDED_BINDING_FUNCTIONS = \
@@ -166,3 +170,4 @@ test/sql/ci-bindings.sql: test/expected/ci-install.out /tmp/extra-functions
 	)'" > $@
 
 ci: test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
+.PHONY: ci format
