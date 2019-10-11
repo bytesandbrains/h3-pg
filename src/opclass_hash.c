@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2019 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *	   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,20 @@
  * limitations under the License.
  */
 
-CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS text
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_get_extension_version() IS
-'Get the currently installed version of the extension.';
+#include <postgres.h>		 // Datum, etc.
+#include <fmgr.h>			 // PG_FUNCTION_ARGS, etc.
+#include <access/hash.h>	 // hash_any
+
+#include <h3api.h> // Main H3 include
+#include "extension.h"
+
+PG_FUNCTION_INFO_V1(h3index_hash);
+
+Datum
+h3index_hash(PG_FUNCTION_ARGS)
+{
+	H3Index    *index = PG_GETARG_H3_INDEX_P(0);
+	uint32		hash = hash_any((unsigned char *) index, sizeof(H3Index));
+
+	PG_RETURN_INT32(hash);
+}

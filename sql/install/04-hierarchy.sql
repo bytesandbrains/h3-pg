@@ -14,35 +14,45 @@
  * limitations under the License.
  */
 
--- Hierarchical grid functions (hierarchy.c)
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Hierarchical Grid Functions (hierarchy.c)
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
+-- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_parent(h3index, resolution integer DEFAULT -1) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_parent(h3index, resolution integer) IS
 'Returns the parent of the given index';
 
+-- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_children(h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_children(index h3index, resolution integer) IS
 'Returns the set of children of the given index';
 
+-- Availability: 3.6.0
 CREATE OR REPLACE FUNCTION h3_to_center_child(h3index, resolution integer DEFAULT -1) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_parent(h3index, resolution integer) IS
 'Returns the center child (finer) index contained by input index at given resolution';
 
+-- Availability: 0.2.0
 CREATE OR REPLACE FUNCTION h3_compact(h3index[]) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_compact(h3index[]) IS
 'Compacts the given array as best as possible';
 
+-- Availability: 0.2.0
 CREATE OR REPLACE FUNCTION h3_uncompact(h3index[], resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_uncompact(h3index[], resolution integer) IS
 'Uncompacts the given array at the given resolution. If no resolution is given, then it is chosen as one higher than the highest resolution in the set';
 
--- Custom functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Custom Funtions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
+-- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION __h3_to_children_aux(index h3index, resolution integer, current INTEGER) 
     RETURNS SETOF h3index AS $$
     DECLARE 
@@ -67,6 +77,7 @@ CREATE OR REPLACE FUNCTION __h3_to_children_aux(index h3index, resolution intege
         END IF;
     END;$$ LANGUAGE plpgsql;
 
+-- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_children_slow(index h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS $$ SELECT __h3_to_children_aux($1, $2, -1) $$ LANGUAGE SQL;
     COMMENT ON FUNCTION h3_to_children_slow(index h3index, resolution integer) IS

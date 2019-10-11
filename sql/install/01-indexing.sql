@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2019 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
--- Indexing functions (indexing.c)
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Indexing Functions (indexing.c)
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
+-- Availability: 0.2.0
 CREATE OR REPLACE FUNCTION h3_geo_to_h3(point, resolution integer) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_geo_to_h3(point, resolution integer) IS
 'Indexes the location at the specified resolution';
 
+-- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geo(h3index) RETURNS point
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_geo(h3index) IS
 'Finds the centroid of the index';
 
+-- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geo_boundary(h3index, extend_at_meridian BOOLEAN default FALSE) RETURNS polygon
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_geo_boundary(h3index, boolean) IS
