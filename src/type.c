@@ -22,13 +22,13 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
-// conversion
+/* conversion */
 PG_FUNCTION_INFO_V1(h3index_in);
 PG_FUNCTION_INFO_V1(h3index_out);
 PG_FUNCTION_INFO_V1(h3index_to_bigint);
 PG_FUNCTION_INFO_V1(bigint_to_h3index);
 
-// b-tree
+/* b-tree */
 PG_FUNCTION_INFO_V1(h3index_eq);
 PG_FUNCTION_INFO_V1(h3index_ne);
 PG_FUNCTION_INFO_V1(h3index_lt);
@@ -36,12 +36,12 @@ PG_FUNCTION_INFO_V1(h3index_le);
 PG_FUNCTION_INFO_V1(h3index_gt);
 PG_FUNCTION_INFO_V1(h3index_ge);
 
-// r-tree
+/* r-tree */
 PG_FUNCTION_INFO_V1(h3index_overlaps);
 PG_FUNCTION_INFO_V1(h3index_contains);
 PG_FUNCTION_INFO_V1(h3index_contained_by);
 
-// static helpers
+/* static helpers */
 static int
 containment(H3Index * a, H3Index * b)
 {
@@ -62,7 +62,7 @@ containment(H3Index * a, H3Index * b)
 	return 0;
 }
 
-// textual input/output functions
+/* textual input/output functions */
 Datum
 h3index_in(PG_FUNCTION_ARGS)
 {
@@ -85,7 +85,7 @@ h3index_out(PG_FUNCTION_ARGS)
 	PG_RETURN_CSTRING(str);
 }
 
-// bigint conversion functions
+/* bigint conversion functions */
 Datum
 h3index_to_bigint(PG_FUNCTION_ARGS)
 {
@@ -104,7 +104,7 @@ bigint_to_h3index(PG_FUNCTION_ARGS)
 	PG_RETURN_H3_INDEX_P(h3index);
 }
 
-// b-tree operators
+/* b-tree operators */
 Datum
 h3index_eq(PG_FUNCTION_ARGS)
 {
@@ -159,7 +159,7 @@ h3index_ge(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(*a >= *b);
 }
 
-// r-tree operators
+/* r-tree operators */
 Datum
 h3index_overlaps(PG_FUNCTION_ARGS)
 {
