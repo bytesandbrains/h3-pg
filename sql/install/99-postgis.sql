@@ -20,27 +20,27 @@
 
 -- Availability: 0.3.0
 CREATE OR REPLACE FUNCTION h3_geo_to_h3(geometry, resolution integer) RETURNS h3index
-    AS $$ SELECT h3_geo_to_h3($1::point, $2); $$ LANGUAGE SQL;
+    AS $$ SELECT h3_geo_to_h3($1::point, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 0.3.0
 CREATE OR REPLACE FUNCTION h3_geo_to_h3(geography, resolution integer) RETURNS h3index
-    AS $$ SELECT h3_geo_to_h3($1::geometry, $2); $$ LANGUAGE SQL;
+    AS $$ SELECT h3_geo_to_h3($1::geometry, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geometry(h3index) RETURNS geometry
-  AS $$ SELECT ST_SetSRID(h3_to_geo($1)::geometry, 4326) $$ LANGUAGE SQL;
+  AS $$ SELECT ST_SetSRID(h3_to_geo($1)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geography(h3index) RETURNS geography
-  AS $$ SELECT h3_to_geometry($1)::geography $$ LANGUAGE SQL;
+  AS $$ SELECT h3_to_geometry($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geometry(h3index, extend BOOLEAN default FALSE) RETURNS geometry
-  AS $$ SELECT ST_SetSRID(h3_to_geo_boundary($1, $2)::geometry, 4326) $$ LANGUAGE SQL;
+  AS $$ SELECT ST_SetSRID(h3_to_geo_boundary($1, $2)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geography(h3index, extend BOOLEAN default FALSE) RETURNS geography
-  AS $$ SELECT h3_to_geo_boundary_geometry($1, $2)::geography $$ LANGUAGE SQL;
+  AS $$ SELECT h3_to_geo_boundary_geometry($1, $2)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 0.3.0
 CREATE OR REPLACE FUNCTION h3_polyfill(multi geometry, resolution integer) RETURNS SETOF h3index
@@ -61,11 +61,11 @@ CREATE OR REPLACE FUNCTION h3_polyfill(multi geometry, resolution integer) RETUR
         FROM (
             select (st_dump(multi)).geom as poly
         ) q_poly GROUP BY poly
-    ) h3_polyfill; $$ LANGUAGE SQL IMMUTABLE STRICT;
+    ) h3_polyfill; $$ LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 0.3.0
 CREATE OR REPLACE FUNCTION h3_polyfill(multi geography, resolution integer) RETURNS SETOF h3index
-AS $$ SELECT h3_polyfill($1::geometry, $2) $$ LANGUAGE SQL;
+AS $$ SELECT h3_polyfill($1::geometry, $2) $$ LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- PostGIS Cast
