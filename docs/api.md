@@ -514,49 +514,37 @@ SELECT h3_get_h3_unidirectional_edge_boundary(h3_get_h3_unidirectional_edge(:hex
 
 ## Miscellaneous H3 functions
 
-### h3_hex_area_km2(resolution `integer`) ⇒ `float`
+### h3_hex_area(resolution `integer`, km `boolean` default false) ⇒ `float`
 
-Returns the area of an hex in square kilometers at the given resolution.
+Returns the area of an hex in square (kilo)meters at the given resolution.
 
 ```
-SELECT h3_hex_area_km2(10);
- h3_hex_area_km2
+SELECT h3_hex_area(10, true);
+ h3_hex_area
 --------------
     0.0150475
 (1 row)
-```
 
-### h3_hex_area_m2(resolution `integer`) ⇒ `float`
-
-Returns the area of an hex in square meters at the given resolution.
-
-```
-SELECT h3_hex_area_m2(10);
- h3_hex_area_m2
+SELECT h3_hex_area(10);
+ h3_hex_area
 -------------
      15047.5
 (1 row)
 ```
 
-### h3_edge_length_km(resolution `integer`) ⇒ `float`
+### h3_edge_length(resolution `integer`, km `boolean` default false) ⇒ `float`
 
-Returns the length of the edges of an hex in kilometers at the given resolution.
+Returns the length of the edges of an hex in (kilo)meters at the given resolution.
 
 ```
-SELECT h3_edge_length_km(10);
- h3_edge_length_km
+SELECT h3_edge_length(10, true);
+ h3_edge_length
 ----------------
     0.065907807
 (1 row)
-```
 
-### h3_edge_length_m(resolution `integer`) ⇒ `float`
-
-Returns the length of the edges of an hex in meters at the given resolution.
-
-```
-SELECT h3_edge_length_m(10);
- h3_edge_length_m
+SELECT h3_edge_length(10);
+ h3_edge_length
 ---------------
    65.90780749
 (1 row)
