@@ -28,6 +28,6 @@ h3index_hash(PG_FUNCTION_ARGS)
 {
 	H3Index    *index = PG_GETARG_H3_INDEX_P(0);
 	uint32		hash = hash_any((unsigned char *) index, sizeof(H3Index));
-
+	PG_FREE_IF_COPY(index, 0);
 	PG_RETURN_INT32(hash);
 }
