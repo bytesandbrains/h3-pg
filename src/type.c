@@ -81,7 +81,7 @@ h3index_out(PG_FUNCTION_ARGS)
 	char	   *str = palloc(17 * sizeof(char));
 
 	h3ToString(*hex, str, 17);
-
+	PG_FREE_IF_COPY(hex, 0);
 	PG_RETURN_CSTRING(str);
 }
 
@@ -110,8 +110,10 @@ h3index_eq(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(*a == *b);
+	bool ret = *a == *b;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 Datum
@@ -119,8 +121,10 @@ h3index_ne(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(*a != *b);
+	bool ret = *a != *b;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 Datum
@@ -128,8 +132,10 @@ h3index_lt(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(*a < *b);
+	bool ret = *a < *b;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 Datum
@@ -137,8 +143,10 @@ h3index_le(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(*a <= *b);
+	bool ret = *a <= *b;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 Datum
@@ -146,8 +154,10 @@ h3index_gt(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(*a > *b);
+	bool ret = *a > *b;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 Datum
@@ -155,8 +165,10 @@ h3index_ge(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(*a >= *b);
+	bool ret = *a >= *b;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 /* r-tree operators */
@@ -165,8 +177,10 @@ h3index_overlaps(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(containment(a, b) != 0);
+	bool ret = containment(a, b) != 0;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 Datum
@@ -174,8 +188,10 @@ h3index_contains(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(containment(a, b) > 0);
+	bool ret = containment(a, b) > 0;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }
 
 Datum
@@ -183,6 +199,8 @@ h3index_contained_by(PG_FUNCTION_ARGS)
 {
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
-
-	PG_RETURN_BOOL(containment(a, b) < 0);
+	bool ret = containment(a, b) < 0;
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 0);
+	PG_RETURN_BOOL(ret);
 }

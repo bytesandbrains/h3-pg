@@ -60,6 +60,7 @@ h3_k_ring(PG_FUNCTION_ARGS)
 		H3Index    *indices = palloc(maxSize * sizeof(H3Index));
 
 		kRing(*origin, k, indices);
+		PG_FREE_IF_COPY(origin, 0);
 
 		funcctx->user_fctx = indices;
 		funcctx->max_calls = maxSize;
@@ -105,6 +106,7 @@ h3_k_ring_distances(PG_FUNCTION_ARGS)
 		user_fctx->distances = palloc(maxSize * sizeof(int));
 
 		kRingDistances(*origin, k, user_fctx->indices, user_fctx->distances);
+		PG_FREE_IF_COPY(origin, 0);
 
 		ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
 
@@ -152,6 +154,7 @@ h3_hex_ring(PG_FUNCTION_ARGS)
 		indices = palloc(maxSize * sizeof(H3Index));
 
 		result = hexRing(*origin, k, indices);
+		PG_FREE_IF_COPY(origin, 0);
 		ASSERT_EXTERNAL(result == 0, "Pentagonal distortion encountered, this method is undefined when it encounters pentagons");
 
 		funcctx->user_fctx = indices;
@@ -179,7 +182,8 @@ h3_distance(PG_FUNCTION_ARGS)
 	int			distance;
 
 	distance = h3Distance(*originIndex, *h3Index);
-
+	PG_FREE_IF_COPY(originIndex, 0);
+	PG_FREE_IF_COPY(h3Index, 1);
 	PG_RETURN_INT32(distance);
 }
 
@@ -206,6 +210,8 @@ h3_line(PG_FUNCTION_ARGS)
 		H3Index    *indices = palloc(size * sizeof(H3Index));
 
 		int			result = h3Line(*start, *end, indices);
+		PG_FREE_IF_COPY(start, 0);
+		PG_FREE_IF_COPY(end, 1);
 
 		ASSERT_EXTERNAL(result == 0, "Failed to generate line");
 
@@ -236,7 +242,8 @@ h3_experimental_h3_to_local_ij(PG_FUNCTION_ARGS)
 
 	point->x = coord.i;
 	point->y = coord.j;
-
+	PG_FREE_IF_COPY(origin, 0);
+	PG_FREE_IF_COPY(index, 1);
 	PG_RETURN_POINT_P(point);
 }
 
@@ -260,6 +267,7 @@ h3_experimental_local_ij_to_h3(PG_FUNCTION_ARGS)
 	coord.j = point->y;
 
 	experimentalLocalIjToH3(*origin, &coord, index);
-
+	PG_FREE_IF_COPY(origin, 0);
+	PG_FREE_IF_COPY(point, 1);
 	PG_RETURN_H3_INDEX_P(index);
 }

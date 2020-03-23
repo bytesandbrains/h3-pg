@@ -28,10 +28,13 @@ h3index_cmp(PG_FUNCTION_ARGS)
 	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 
-	if (*a > *b)
-		PG_RETURN_INT32(1);
-	else if (*a == *b)
-		PG_RETURN_INT32(0);
-	else
-		PG_RETURN_INT32(-1);
+	uint32_t ret = 0;
+	if (*a < *b)
+		ret = 1;
+	else if (*a > *b)
+		ret = -1;
+
+	PG_FREE_IF_COPY(a, 0);
+	PG_FREE_IF_COPY(b, 1);
+	PG_RETURN_INT32(ret);
 }

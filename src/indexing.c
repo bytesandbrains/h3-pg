@@ -42,6 +42,7 @@ h3_geo_to_h3(PG_FUNCTION_ARGS)
 	*idx = geoToH3(&location, resolution);
 	ASSERT_EXTERNAL(*idx, "Indexing failed at specified resolution.");
 
+	PG_FREE_IF_COPY(geo, 0);
 	PG_RETURN_H3_INDEX_P(idx);
 }
 
@@ -59,6 +60,7 @@ h3_to_geo(PG_FUNCTION_ARGS)
 	geo->x = radsToDegs(center.lon);
 	geo->y = radsToDegs(center.lat);
 
+	PG_FREE_IF_COPY(idx, 0);
 	PG_RETURN_POINT_P(geo);
 }
 
@@ -108,5 +110,6 @@ h3_to_geo_boundary(PG_FUNCTION_ARGS)
 		polygon->p[v].y = radsToDegs(lat);
 	}
 
+	PG_FREE_IF_COPY(idx, 0);
 	PG_RETURN_POLYGON_P(polygon);
 }

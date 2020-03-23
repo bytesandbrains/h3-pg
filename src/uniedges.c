@@ -39,7 +39,8 @@ h3_indexes_are_neighbors(PG_FUNCTION_ARGS)
 	H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
 	H3Index    *destination = PG_GETARG_H3_INDEX_P(1);
 	bool		areNeighbors = h3IndexesAreNeighbors(*origin, *destination);
-
+	PG_FREE_IF_COPY(origin, 0);
+	PG_FREE_IF_COPY(destination, 1);
 	PG_RETURN_BOOL(areNeighbors);
 }
 
@@ -56,7 +57,8 @@ h3_get_h3_unidirectional_edge(PG_FUNCTION_ARGS)
 
 	*edge = getH3UnidirectionalEdge(*origin, *destination);
 	ASSERT_EXTERNAL(*edge, "Can only create edges between neighbouring indexes");
-
+	PG_FREE_IF_COPY(origin, 0);
+	PG_FREE_IF_COPY(destination, 1);
 	PG_RETURN_H3_INDEX_P(edge);
 }
 
@@ -66,7 +68,7 @@ h3_unidirectional_edge_is_valid(PG_FUNCTION_ARGS)
 {
 	H3Index    *edge = PG_GETARG_H3_INDEX_P(0);
 	bool		isValid = h3UnidirectionalEdgeIsValid(*edge);
-
+	PG_FREE_IF_COPY(edge, 0);
 	PG_RETURN_BOOL(isValid);
 }
 
@@ -78,7 +80,8 @@ h3_get_origin_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 	H3Index    *origin = palloc(sizeof(H3Index));
 
 	*origin = getOriginH3IndexFromUnidirectionalEdge(*edge);
-
+	PG_FREE_IF_COPY(edge, 0);
+	PG_FREE_IF_COPY(origin, 1);
 	PG_RETURN_H3_INDEX_P(origin);
 }
 
@@ -90,6 +93,7 @@ h3_get_destination_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 	H3Index    *destination = palloc(sizeof(H3Index));
 
 	*destination = getDestinationH3IndexFromUnidirectionalEdge(*edge);
+	PG_FREE_IF_COPY(edge, 0);
 	PG_RETURN_H3_INDEX_P(destination);
 }
 
@@ -118,6 +122,7 @@ h3_get_h3_indexes_from_unidirectional_edge(PG_FUNCTION_ARGS)
 
 	tuple = heap_form_tuple(tuple_desc, values, nulls);
 	result = HeapTupleGetDatum(tuple);
+	PG_FREE_IF_COPY(edge, 0);
 	PG_RETURN_DATUM(result);
 }
 
@@ -139,6 +144,7 @@ h3_get_h3_unidirectional_edges_from_hexagon(PG_FUNCTION_ARGS)
 
 		funcctx->user_fctx = edges;
 		funcctx->max_calls = maxSize;
+		PG_FREE_IF_COPY(origin, 0);
 		MemoryContextSwitchTo(oldcontext);
 	}
 
@@ -167,6 +173,6 @@ h3_get_h3_unidirectional_edge_boundary(PG_FUNCTION_ARGS)
 		polygon->p[v].x = radsToDegs(geoBoundary.verts[v].lat);
 		polygon->p[v].y = radsToDegs(geoBoundary.verts[v].lon);
 	}
-
+	PG_FREE_IF_COPY(edge, 0);
 	PG_RETURN_POLYGON_P(polygon);
 }

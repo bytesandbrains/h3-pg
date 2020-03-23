@@ -57,6 +57,7 @@ h3_to_parent(PG_FUNCTION_ARGS)
 	*parent = h3ToParent(*origin, parentRes);
 	ASSERT_EXTERNAL(*parent, "Could not generate parent");
 
+	PG_FREE_IF_COPY(origin, 0);
 	PG_RETURN_H3_INDEX_P(parent);
 }
 
@@ -106,6 +107,7 @@ h3_to_children(PG_FUNCTION_ARGS)
 		children = palloc(size);
 		h3ToChildren(*origin, resolution, children);
 		ASSERT_EXTERNAL(*children, "Could not generate children");
+		PG_FREE_IF_COPY(origin, 0);
 
 		funcctx->user_fctx = children;
 		funcctx->max_calls = maxSize;
@@ -146,6 +148,7 @@ h3_to_center_child(PG_FUNCTION_ARGS)
 	*child = h3ToCenterChild(*origin, childRes);
 	ASSERT_EXTERNAL(*child, "Could not generate center child");
 
+	PG_FREE_IF_COPY(origin, 0);
 	PG_RETURN_H3_INDEX_P(child);
 }
 
