@@ -112,7 +112,7 @@ h3index_eq(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = *a == *b;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -123,7 +123,7 @@ h3index_ne(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = *a != *b;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -134,7 +134,7 @@ h3index_lt(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = *a < *b;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -145,7 +145,7 @@ h3index_le(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = *a <= *b;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -156,7 +156,7 @@ h3index_gt(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = *a > *b;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -167,7 +167,7 @@ h3index_ge(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = *a >= *b;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -179,7 +179,7 @@ h3index_overlaps(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = containment(a, b) != 0;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -190,7 +190,7 @@ h3index_contains(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = containment(a, b) > 0;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
 
@@ -201,6 +201,6 @@ h3index_contained_by(PG_FUNCTION_ARGS)
 	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
 	bool ret = containment(a, b) < 0;
 	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 0);
+	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_BOOL(ret);
 }
