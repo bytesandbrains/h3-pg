@@ -81,7 +81,6 @@ h3_get_origin_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 
 	*origin = getOriginH3IndexFromUnidirectionalEdge(*edge);
 	PG_FREE_IF_COPY(edge, 0);
-	PG_FREE_IF_COPY(origin, 1);
 	PG_RETURN_H3_INDEX_P(origin);
 }
 
