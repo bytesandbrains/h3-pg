@@ -16,3 +16,5 @@
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+
+ALTER OPERATOR family btree_h3index_ops USING btree ADD FUNCTION 2 (h3index) h3index_sortsupport(internal);
