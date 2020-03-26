@@ -4,6 +4,7 @@ set -e
 DISTRIBUTION=$1
 
 service postgresql start
+chmod -R 777 test
 
 if [ -z "$DISTRIBUTION" ]; then
     make install
