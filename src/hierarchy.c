@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ PG_FUNCTION_INFO_V1(h3_uncompact);
 Datum
 h3_to_parent(PG_FUNCTION_ARGS)
 {
-	H3Index    *parent;
+	H3Index    parent;
 
 	/* get function arguments */
-	H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+	H3Index		origin = PG_GETARG_H3INDEX(0);
 	int			parentRes = PG_GETARG_INT32(1);
-	int			childRes = h3GetResolution(*origin);
+	int			childRes = h3GetResolution(origin);
 
 	if (parentRes == -1)
 	{
@@ -53,12 +53,10 @@ h3_to_parent(PG_FUNCTION_ARGS)
 		);
 
 	/* get parent */
-	parent = palloc(sizeof(H3Index));
-	*parent = h3ToParent(*origin, parentRes);
-	ASSERT_EXTERNAL(*parent, "Could not generate parent");
+	parent = h3ToParent(origin, parentRes);
+	ASSERT_EXTERNAL(parent, "Could not generate parent");
 
-	PG_FREE_IF_COPY(origin, 0);
-	PG_RETURN_H3_INDEX_P(parent);
+	PG_RETURN_H3INDEX(parent);
 }
 
 /* Returns children indexes at given resolution (or next resolution if none given) */
@@ -82,13 +80,13 @@ h3_to_children(PG_FUNCTION_ARGS)
 		/* BEGIN One-time setup code */
 
 		/* ensure valid resolution target */
-		H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+		H3Index     origin = PG_GETARG_H3INDEX(0);
 		int			resolution = PG_GETARG_INT32(1);
 
 		if (resolution == -1)
 		{
 			/* resolution parameter not set */
-			resolution = h3GetResolution(*origin) + 1;
+			resolution = h3GetResolution(origin) + 1;
 		}
 		ASSERT(
 			   resolution <= MAX_H3_RES,
@@ -96,7 +94,7 @@ h3_to_children(PG_FUNCTION_ARGS)
 			   "Maximum resolution exceeded"
 			);
 
-		maxSize = maxH3ToChildrenSize(*origin, resolution);
+		maxSize = maxH3ToChildrenSize(origin, resolution);
 		size = maxSize * sizeof(H3Index);
 		ASSERT(
 			   AllocSizeIsValid(size),
@@ -105,9 +103,8 @@ h3_to_children(PG_FUNCTION_ARGS)
 			);
 
 		children = palloc(size);
-		h3ToChildren(*origin, resolution, children);
+		h3ToChildren(origin, resolution, children);
 		ASSERT_EXTERNAL(*children, "Could not generate children");
-		PG_FREE_IF_COPY(origin, 0);
 
 		funcctx->user_fctx = children;
 		funcctx->max_calls = maxSize;
@@ -124,12 +121,12 @@ h3_to_children(PG_FUNCTION_ARGS)
 Datum
 h3_to_center_child(PG_FUNCTION_ARGS)
 {
-	H3Index    *child;
+	H3Index    child;
 
 	/* get function arguments */
-	H3Index    *origin = PG_GETARG_H3_INDEX_P(0);
+	H3Index     origin = PG_GETARG_H3INDEX(0);
 	int			childRes = PG_GETARG_INT32(1);
-	int			parentRes = h3GetResolution(*origin);
+	int			parentRes = h3GetResolution(origin);
 
 	if (childRes == -1)
 	{
@@ -144,12 +141,10 @@ h3_to_center_child(PG_FUNCTION_ARGS)
 		);
 
 	/* get child */
-	child = palloc(sizeof(H3Index));
-	*child = h3ToCenterChild(*origin, childRes);
-	ASSERT_EXTERNAL(*child, "Could not generate center child");
+	child = h3ToCenterChild(origin, childRes);
+	ASSERT_EXTERNAL(child, "Could not generate center child");
 
-	PG_FREE_IF_COPY(origin, 0);
-	PG_RETURN_H3_INDEX_P(child);
+	PG_RETURN_H3INDEX(child);
 }
 
 Datum
@@ -158,27 +153,28 @@ h3_compact(PG_FUNCTION_ARGS)
 	if (SRF_IS_FIRSTCALL())
 	{
 		int			result;
+		Datum		value;
+		bool		isnull;
+		int         i = 0;
+
 		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
 		MemoryContext oldcontext =
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		ArrayType  *array = PG_GETARG_ARRAYTYPE_P(0);
-
-		int			arrayLength = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-		H3Index    *h3set = palloc(sizeof(H3Index) * arrayLength);
-		H3Index    *idx = (H3Index *) ARR_DATA_PTR(array);
-
-		int			maxSize = arrayLength;
-		H3Index    *compactedSet = palloc0(maxSize * sizeof(H3Index));
+		ArrayType    *array = PG_GETARG_ARRAYTYPE_P(0);
+		int			  maxSize = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+		H3Index      *h3set = palloc(sizeof(H3Index) * maxSize);
+		H3Index      *compactedSet = palloc0(maxSize * sizeof(H3Index));
 
 		/* Extract data from array into h3set, and wipe compactedSet memory */
-		for (int i = 0; i < arrayLength; i++)
+		while (array_iterate(iterator, &value, &isnull))
 		{
-			h3set[i] = fetch_att(idx, true, sizeof(H3Index));
-			idx++;
+			H3Index    idx = DatumGetH3Index(value);
+			h3set[i++] = idx;
 		}
 
-		result = compact(h3set, compactedSet, arrayLength);
+		result = compact(h3set, compactedSet, maxSize);
 		ASSERT_EXTERNAL(result == 0, "Could not compact input array");
 
 		funcctx->user_fctx = compactedSet;
@@ -195,6 +191,9 @@ h3_uncompact(PG_FUNCTION_ARGS)
 	if (SRF_IS_FIRSTCALL())
 	{
 		int			result;
+		Datum		value;
+		bool		isnull;
+		int         i = 0;
 		int			maxSize;
 		H3Index    *uncompactedSet;
 
@@ -206,14 +205,14 @@ h3_uncompact(PG_FUNCTION_ARGS)
 		int			resolution = PG_GETARG_INT32(1);
 
 		int			arrayLength = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		ArrayIterator iterator = array_create_iterator(array, 0, NULL);
 		H3Index    *h3set = palloc(sizeof(H3Index) * arrayLength);
-		H3Index    *idx = (H3Index *) ARR_DATA_PTR(array);
 
 		/* Extract data from array into h3set, and wipe compactedSet memory */
-		for (int i = 0; i < arrayLength; i++)
+		while (array_iterate(iterator, &value, &isnull))
 		{
-			h3set[i] = fetch_att(idx, true, sizeof(H3Index));
-			idx++;
+			H3Index    idx = DatumGetH3Index(value);
+			h3set[i++] = idx;
 		}
 
 		if (resolution == -1)

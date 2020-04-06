@@ -1,5 +1,8 @@
+ARG ARCH=amd64
 ARG UBUNTU=bionic
-FROM ubuntu:bionic
+FROM $ARCH/ubuntu:$UBUNTU
+
+ARG ARCH
 ARG UBUNTU
 ENV DEBIAN_FRONTEND=noninteractive
 

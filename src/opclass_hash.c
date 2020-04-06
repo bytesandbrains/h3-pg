@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,7 @@ PG_FUNCTION_INFO_V1(h3index_hash);
 Datum
 h3index_hash(PG_FUNCTION_ARGS)
 {
-	H3Index    *index = PG_GETARG_H3_INDEX_P(0);
-	uint32		hash = hash_any((unsigned char *) index, sizeof(H3Index));
-	PG_FREE_IF_COPY(index, 0);
+	H3Index     index = PG_GETARG_H3INDEX(0);
+	uint32		hash = hash_any((unsigned char *) &index, sizeof(index));
 	PG_RETURN_INT32(hash);
 }

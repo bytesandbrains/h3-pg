@@ -35,10 +35,9 @@ CREATE OR REPLACE FUNCTION h3index_out(h3index) RETURNS cstring
 
 -- Availability: 0.1.0
 CREATE TYPE h3index (
-  INTERNALLENGTH = 8,
   INPUT          = h3index_in,
   OUTPUT         = h3index_out,
-  ALIGNMENT      = double
+  LIKE           = int8
 );
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------

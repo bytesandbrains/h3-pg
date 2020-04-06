@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,15 @@ PG_FUNCTION_INFO_V1(h3index_cmp);
 Datum
 h3index_cmp(PG_FUNCTION_ARGS)
 {
-	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
-	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
+	H3Index     a = PG_GETARG_H3INDEX(0);
+	H3Index     b = PG_GETARG_H3INDEX(1);
 
 	uint32_t ret = 0;
-	if (*a < *b)
+	if (a < b)
 		ret = 1;
-	else if (*a > *b)
+	else if (a > b)
 		ret = -1;
 
-	PG_FREE_IF_COPY(a, 0);
-	PG_FREE_IF_COPY(b, 1);
 	PG_RETURN_INT32(ret);
 }
 
@@ -55,12 +53,12 @@ h3index_cmp_abbrev(Datum x, Datum y, SortSupport ssup)
 static int
 h3index_cmp_full(Datum x, Datum y, SortSupport ssup)
 {
-	H3Index    *a = (H3Index *)DatumGetPointer(x);
-	H3Index    *b = (H3Index *)DatumGetPointer(y);
+	H3Index    a = DatumGetH3Index(x);
+	H3Index    b = DatumGetH3Index(y);
 
-	if (*a == *b)
+	if (a == b)
 		return 0;
-	else if (*a < *b)
+	else if (a < b)
 		return 1;
     return -1;
 }
@@ -74,8 +72,8 @@ h3index_abbrev_abort(int memtupcount, SortSupport ssup)
 static Datum
 h3index_abbrev_convert(Datum original, SortSupport ssup)
 {
-	H3Index    *a = (H3Index *)DatumGetPointer(original);
-	return *a;
+	H3Index    a = DatumGetH3Index(original);
+	return a;
 }
 
 /*

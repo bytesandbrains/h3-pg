@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,8 @@ PG_FUNCTION_INFO_V1(h3_get_faces);
 Datum
 h3_get_resolution(PG_FUNCTION_ARGS)
 {
-	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
-	int			resolution = h3GetResolution(*hex);
-	PG_FREE_IF_COPY(hex, 0);
+	H3Index     hex = PG_GETARG_H3INDEX(0);
+	int			resolution = h3GetResolution(hex);
 	PG_RETURN_INT32(resolution);
 }
 
@@ -44,9 +43,8 @@ h3_get_resolution(PG_FUNCTION_ARGS)
 Datum
 h3_get_base_cell(PG_FUNCTION_ARGS)
 {
-	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
-	int			base_cell_number = h3GetBaseCell(*hex);
-	PG_FREE_IF_COPY(hex, 0);
+	H3Index     hex = PG_GETARG_H3INDEX(0);
+	int			base_cell_number = h3GetBaseCell(hex);
 	PG_RETURN_INT32(base_cell_number);
 }
 
@@ -54,9 +52,8 @@ h3_get_base_cell(PG_FUNCTION_ARGS)
 Datum
 h3_is_valid(PG_FUNCTION_ARGS)
 {
-	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
-	bool		isValid = h3IsValid(*hex);
-	PG_FREE_IF_COPY(hex, 0);
+	H3Index     hex = PG_GETARG_H3INDEX(0);
+	bool		isValid = h3IsValid(hex);
 	PG_RETURN_BOOL(isValid);
 }
 
@@ -64,9 +61,8 @@ h3_is_valid(PG_FUNCTION_ARGS)
 Datum
 h3_is_res_class_iii(PG_FUNCTION_ARGS)
 {
-	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
-	bool		isResClassIII = h3IsResClassIII(*hex);
-	PG_FREE_IF_COPY(hex, 0);
+	H3Index     hex = PG_GETARG_H3INDEX(0);
+	bool		isResClassIII = h3IsResClassIII(hex);
 	PG_RETURN_BOOL(isResClassIII);
 }
 
@@ -74,9 +70,8 @@ h3_is_res_class_iii(PG_FUNCTION_ARGS)
 Datum
 h3_is_pentagon(PG_FUNCTION_ARGS)
 {
-	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
-	bool		isPentagon = h3IsPentagon(*hex);
-	PG_FREE_IF_COPY(hex, 0);
+	H3Index     hex = PG_GETARG_H3INDEX(0);
+	bool		isPentagon = h3IsPentagon(hex);
 	PG_RETURN_BOOL(isPentagon);
 }
 
@@ -89,8 +84,8 @@ h3_get_faces(PG_FUNCTION_ARGS)
 	bool		elmbyval;
 	char		elmalign;
 
-	H3Index    *hex = PG_GETARG_H3_INDEX_P(0);
-	int			maxFaces = maxFaceCount(*hex);
+	H3Index     hex = PG_GETARG_H3INDEX(0);
+	int			maxFaces = maxFaceCount(hex);
 
 	ArrayType  *result;
 
@@ -100,7 +95,7 @@ h3_get_faces(PG_FUNCTION_ARGS)
 	int		   *faces = palloc(maxFaces * sizeof(int));
 	Datum	   *elements = palloc(maxFaces * sizeof(Datum));
 
-	h3GetFaces(*hex, faces);
+	h3GetFaces(hex, faces);
 
 	for (int i = 0; i < maxFaces; i++)
 	{
@@ -114,6 +109,5 @@ h3_get_faces(PG_FUNCTION_ARGS)
 	/* build the array */
 	get_typlenbyvalalign(elmtype, &elmlen, &elmbyval, &elmalign);
 	result = construct_array(elements, nelems, elmtype, elmlen, elmbyval, elmalign);
-	PG_FREE_IF_COPY(hex, 0);
 	PG_RETURN_ARRAYTYPE_P(result);
 }

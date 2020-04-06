@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ srf_return_h3_indexes_from_user_fctx(PG_FUNCTION_ARGS)
 
 	if (call_cntr < max_calls)
 	{
-		Datum		result = PointerGetDatum(&indices[call_cntr]);
+		Datum		result = H3IndexGetDatum(indices[call_cntr]);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -98,7 +98,7 @@ srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS)
 		HeapTuple	tuple;
 		Datum		result;
 
-		values[0] = PointerGetDatum(&indices[call_cntr]);
+		values[0] = H3IndexGetDatum(indices[call_cntr]);
 		values[1] = Int32GetDatum(distances[call_cntr]);
 
 		tuple = heap_form_tuple(tuple_desc, values, nulls);
