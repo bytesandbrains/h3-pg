@@ -33,7 +33,7 @@ h3_geo_to_h3(PG_FUNCTION_ARGS)
 	Point	   *geo = PG_GETARG_POINT_P(0);
 	int			resolution = PG_GETARG_INT32(1);
 
-	H3Index     idx;
+	H3Index		idx;
 	GeoCoord	location;
 
 	location.lon = degsToRads(geo->x);
@@ -50,7 +50,7 @@ h3_geo_to_h3(PG_FUNCTION_ARGS)
 Datum
 h3_to_geo(PG_FUNCTION_ARGS)
 {
-	H3Index    idx = PG_GETARG_H3INDEX(0);
+	H3Index		idx = PG_GETARG_H3INDEX(0);
 
 	Point	   *geo = palloc(sizeof(Point));
 	GeoCoord	center;
@@ -67,7 +67,7 @@ h3_to_geo(PG_FUNCTION_ARGS)
 Datum
 h3_to_geo_boundary(PG_FUNCTION_ARGS)
 {
-	H3Index     idx = PG_GETARG_H3INDEX(0);
+	H3Index		idx = PG_GETARG_H3INDEX(0);
 	bool		extend = PG_GETARG_BOOL(1);
 
 	double		delta,

@@ -66,8 +66,8 @@ containment(H3Index a, H3Index b)
 Datum
 h3index_in(PG_FUNCTION_ARGS)
 {
-	char   *str = PG_GETARG_CSTRING(0);
-	H3Index hex = stringToH3(str);
+	char	   *str = PG_GETARG_CSTRING(0);
+	H3Index		hex = stringToH3(str);
 
 	PG_RETURN_H3INDEX(hex);
 }
@@ -75,7 +75,7 @@ h3index_in(PG_FUNCTION_ARGS)
 Datum
 h3index_out(PG_FUNCTION_ARGS)
 {
-	H3Index     hex = PG_GETARG_H3INDEX(0);
+	H3Index		hex = PG_GETARG_H3INDEX(0);
 	char	   *str = palloc(17 * sizeof(char));
 
 	h3ToString(hex, str, 17);
@@ -86,7 +86,7 @@ h3index_out(PG_FUNCTION_ARGS)
 Datum
 h3index_to_bigint(PG_FUNCTION_ARGS)
 {
-	H3Index    h3index = PG_GETARG_H3INDEX(0);
+	H3Index		h3index = PG_GETARG_H3INDEX(0);
 
 	PG_RETURN_INT64(h3index);
 }
@@ -103,54 +103,60 @@ bigint_to_h3index(PG_FUNCTION_ARGS)
 Datum
 h3index_eq(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = a == b;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = a == b;
+
 	PG_RETURN_BOOL(ret);
 }
 
 Datum
 h3index_ne(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = a != b;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = a != b;
+
 	PG_RETURN_BOOL(ret);
 }
 
 Datum
 h3index_lt(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = a < b;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = a < b;
+
 	PG_RETURN_BOOL(ret);
 }
 
 Datum
 h3index_le(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = a <= b;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = a <= b;
+
 	PG_RETURN_BOOL(ret);
 }
 
 Datum
 h3index_gt(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = a > b;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = a > b;
+
 	PG_RETURN_BOOL(ret);
 }
 
 Datum
 h3index_ge(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = a >= b;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = a >= b;
+
 	PG_RETURN_BOOL(ret);
 }
 
@@ -158,26 +164,29 @@ h3index_ge(PG_FUNCTION_ARGS)
 Datum
 h3index_overlaps(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = containment(a, b) != 0;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = containment(a, b) != 0;
+
 	PG_RETURN_BOOL(ret);
 }
 
 Datum
 h3index_contains(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = containment(a, b) > 0;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = containment(a, b) > 0;
+
 	PG_RETURN_BOOL(ret);
 }
 
 Datum
 h3index_contained_by(PG_FUNCTION_ARGS)
 {
-	H3Index    a = PG_GETARG_H3INDEX(0);
-	H3Index    b = PG_GETARG_H3INDEX(1);
-	bool ret = containment(a, b) < 0;
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	bool		ret = containment(a, b) < 0;
+
 	PG_RETURN_BOOL(ret);
 }

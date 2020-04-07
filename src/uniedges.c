@@ -36,9 +36,10 @@ PG_FUNCTION_INFO_V1(h3_get_h3_unidirectional_edge_boundary);
 Datum
 h3_indexes_are_neighbors(PG_FUNCTION_ARGS)
 {
-	H3Index     origin = PG_GETARG_H3INDEX(0);
-	H3Index     destination = PG_GETARG_H3INDEX(1);
+	H3Index		origin = PG_GETARG_H3INDEX(0);
+	H3Index		destination = PG_GETARG_H3INDEX(1);
 	bool		areNeighbors = h3IndexesAreNeighbors(origin, destination);
+
 	PG_RETURN_BOOL(areNeighbors);
 }
 
@@ -49,9 +50,10 @@ h3_indexes_are_neighbors(PG_FUNCTION_ARGS)
 Datum
 h3_get_h3_unidirectional_edge(PG_FUNCTION_ARGS)
 {
-	H3Index origin = PG_GETARG_H3INDEX(0);
-	H3Index destination = PG_GETARG_H3INDEX(1);
-	H3Index edge = getH3UnidirectionalEdge(origin, destination);
+	H3Index		origin = PG_GETARG_H3INDEX(0);
+	H3Index		destination = PG_GETARG_H3INDEX(1);
+	H3Index		edge = getH3UnidirectionalEdge(origin, destination);
+
 	ASSERT_EXTERNAL(edge, "Can only create edges between neighbouring indexes");
 	PG_RETURN_H3INDEX(edge);
 }
@@ -60,8 +62,9 @@ h3_get_h3_unidirectional_edge(PG_FUNCTION_ARGS)
 Datum
 h3_unidirectional_edge_is_valid(PG_FUNCTION_ARGS)
 {
-	H3Index     edge = PG_GETARG_H3INDEX(0);
+	H3Index		edge = PG_GETARG_H3INDEX(0);
 	bool		isValid = h3UnidirectionalEdgeIsValid(edge);
+
 	PG_RETURN_BOOL(isValid);
 }
 
@@ -69,8 +72,9 @@ h3_unidirectional_edge_is_valid(PG_FUNCTION_ARGS)
 Datum
 h3_get_origin_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 {
-	H3Index edge = PG_GETARG_H3INDEX(0);
-	H3Index origin = getOriginH3IndexFromUnidirectionalEdge(edge);
+	H3Index		edge = PG_GETARG_H3INDEX(0);
+	H3Index		origin = getOriginH3IndexFromUnidirectionalEdge(edge);
+
 	PG_RETURN_H3INDEX(origin);
 }
 
@@ -78,8 +82,9 @@ h3_get_origin_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 Datum
 h3_get_destination_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 {
-	H3Index edge = PG_GETARG_H3INDEX(0);
-	H3Index destination = getDestinationH3IndexFromUnidirectionalEdge(edge);
+	H3Index		edge = PG_GETARG_H3INDEX(0);
+	H3Index		destination = getDestinationH3IndexFromUnidirectionalEdge(edge);
+
 	PG_RETURN_H3INDEX(destination);
 }
 
@@ -93,7 +98,7 @@ h3_get_h3_indexes_from_unidirectional_edge(PG_FUNCTION_ARGS)
 	HeapTuple	tuple;
 	Datum		result;
 
-	H3Index    edge = PG_GETARG_H3INDEX(0);
+	H3Index		edge = PG_GETARG_H3INDEX(0);
 	H3Index    *indexes = palloc(sizeof(H3Index) * 2);
 
 	getH3IndexesFromUnidirectionalEdge(edge, indexes);
@@ -119,7 +124,7 @@ h3_get_h3_unidirectional_edges_from_hexagon(PG_FUNCTION_ARGS)
 		MemoryContext oldcontext =
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		H3Index     origin = PG_GETARG_H3INDEX(0);
+		H3Index		origin = PG_GETARG_H3INDEX(0);
 		int			maxSize = 6;
 		H3Index    *edges = palloc(sizeof(H3Index) * maxSize);
 
@@ -137,7 +142,7 @@ h3_get_h3_unidirectional_edges_from_hexagon(PG_FUNCTION_ARGS)
 Datum
 h3_get_h3_unidirectional_edge_boundary(PG_FUNCTION_ARGS)
 {
-	H3Index     edge = PG_GETARG_H3INDEX(0);
+	H3Index		edge = PG_GETARG_H3INDEX(0);
 
 	GeoBoundary geoBoundary;
 	POLYGON    *polygon;

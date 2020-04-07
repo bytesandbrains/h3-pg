@@ -16,7 +16,7 @@
 
 #include <postgres.h>		 // Datum, etc.
 #include <fmgr.h>			 // PG_FUNCTION_ARGS, etc.
-#include "utils/sortsupport.h" /* SortSupport */
+#include "utils/sortsupport.h"	/* SortSupport */
 
 #include <h3api.h> // Main H3 include
 #include "extension.h"
@@ -26,10 +26,11 @@ PG_FUNCTION_INFO_V1(h3index_cmp);
 Datum
 h3index_cmp(PG_FUNCTION_ARGS)
 {
-	H3Index     a = PG_GETARG_H3INDEX(0);
-	H3Index     b = PG_GETARG_H3INDEX(1);
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
 
-	uint32_t ret = 0;
+	uint32_t	ret = 0;
+
 	if (a < b)
 		ret = 1;
 	else if (a > b)
@@ -53,14 +54,14 @@ h3index_cmp_abbrev(Datum x, Datum y, SortSupport ssup)
 static int
 h3index_cmp_full(Datum x, Datum y, SortSupport ssup)
 {
-	H3Index    a = DatumGetH3Index(x);
-	H3Index    b = DatumGetH3Index(y);
+	H3Index		a = DatumGetH3Index(x);
+	H3Index		b = DatumGetH3Index(y);
 
 	if (a == b)
 		return 0;
 	else if (a < b)
 		return 1;
-    return -1;
+	return -1;
 }
 
 static bool
@@ -72,7 +73,8 @@ h3index_abbrev_abort(int memtupcount, SortSupport ssup)
 static Datum
 h3index_abbrev_convert(Datum original, SortSupport ssup)
 {
-	H3Index    a = DatumGetH3Index(original);
+	H3Index		a = DatumGetH3Index(original);
+
 	return a;
 }
 
@@ -80,9 +82,10 @@ h3index_abbrev_convert(Datum original, SortSupport ssup)
  * Sort support strategy routine
  */
 PG_FUNCTION_INFO_V1(h3index_sortsupport);
-Datum h3index_sortsupport(PG_FUNCTION_ARGS)
+Datum
+h3index_sortsupport(PG_FUNCTION_ARGS)
 {
-	SortSupport ssup = (SortSupport)PG_GETARG_POINTER(0);
+	SortSupport ssup = (SortSupport) PG_GETARG_POINTER(0);
 
 	ssup->comparator = h3index_cmp_full;
 	ssup->ssup_extra = NULL;

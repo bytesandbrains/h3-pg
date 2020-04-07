@@ -26,7 +26,8 @@ PG_FUNCTION_INFO_V1(h3index_hash);
 Datum
 h3index_hash(PG_FUNCTION_ARGS)
 {
-	H3Index     index = PG_GETARG_H3INDEX(0);
+	H3Index		index = PG_GETARG_H3INDEX(0);
 	uint32		hash = hash_any((unsigned char *) &index, sizeof(index));
+
 	PG_RETURN_INT32(hash);
 }

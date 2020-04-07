@@ -52,7 +52,7 @@ h3_k_ring(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* get function arguments */
-		H3Index     origin = PG_GETARG_H3INDEX(0);
+		H3Index		origin = PG_GETARG_H3INDEX(0);
 		int			k = PG_GETARG_INT32(1);
 
 		/* produce indices into allocated memory */
@@ -90,7 +90,7 @@ h3_k_ring_distances(PG_FUNCTION_ARGS)
 		TupleDesc	tuple_desc;
 
 		/* get function arguments */
-		H3Index     origin = PG_GETARG_H3INDEX(0);
+		H3Index		origin = PG_GETARG_H3INDEX(0);
 		int			k = PG_GETARG_INT32(1);
 
 		/*
@@ -135,7 +135,7 @@ h3_hex_ring(PG_FUNCTION_ARGS)
 
 		/* get function arguments */
 		H3Index    *indices;
-		H3Index     origin = PG_GETARG_H3INDEX(0);
+		H3Index		origin = PG_GETARG_H3INDEX(0);
 		int			k = PG_GETARG_INT32(1);
 
 		/*
@@ -174,8 +174,8 @@ h3_hex_ring(PG_FUNCTION_ARGS)
 Datum
 h3_distance(PG_FUNCTION_ARGS)
 {
-	H3Index     originIndex = PG_GETARG_H3INDEX(0);
-	H3Index     h3Index = PG_GETARG_H3INDEX(1);
+	H3Index		originIndex = PG_GETARG_H3INDEX(0);
+	H3Index		h3Index = PG_GETARG_H3INDEX(1);
 	int			distance;
 
 	distance = h3Distance(originIndex, h3Index);
@@ -199,8 +199,8 @@ h3_line(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* get function arguments */
-		H3Index     start = PG_GETARG_H3INDEX(0);
-		H3Index     end = PG_GETARG_H3INDEX(1);
+		H3Index		start = PG_GETARG_H3INDEX(0);
+		H3Index		end = PG_GETARG_H3INDEX(1);
 		int			size = h3LineSize(start, end);
 		H3Index    *indices = palloc(size * sizeof(H3Index));
 
@@ -225,8 +225,8 @@ h3_line(PG_FUNCTION_ARGS)
 Datum
 h3_experimental_h3_to_local_ij(PG_FUNCTION_ARGS)
 {
-	H3Index     origin = PG_GETARG_H3INDEX(0);
-	H3Index     index = PG_GETARG_H3INDEX(1);
+	H3Index		origin = PG_GETARG_H3INDEX(0);
+	H3Index		index = PG_GETARG_H3INDEX(1);
 
 	Point	   *point = (Point *) palloc(sizeof(Point));
 	CoordIJ		coord;
@@ -247,7 +247,7 @@ h3_experimental_h3_to_local_ij(PG_FUNCTION_ARGS)
 Datum
 h3_experimental_local_ij_to_h3(PG_FUNCTION_ARGS)
 {
-	H3Index     origin = PG_GETARG_H3INDEX(0);
+	H3Index		origin = PG_GETARG_H3INDEX(0);
 	Point	   *point = PG_GETARG_POINT_P(1);
 
 	H3Index    *index = (H3Index *) palloc(sizeof(H3Index));

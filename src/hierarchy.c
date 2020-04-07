@@ -33,7 +33,7 @@ PG_FUNCTION_INFO_V1(h3_uncompact);
 Datum
 h3_to_parent(PG_FUNCTION_ARGS)
 {
-	H3Index    parent;
+	H3Index		parent;
 
 	/* get function arguments */
 	H3Index		origin = PG_GETARG_H3INDEX(0);
@@ -80,7 +80,7 @@ h3_to_children(PG_FUNCTION_ARGS)
 		/* BEGIN One-time setup code */
 
 		/* ensure valid resolution target */
-		H3Index     origin = PG_GETARG_H3INDEX(0);
+		H3Index		origin = PG_GETARG_H3INDEX(0);
 		int			resolution = PG_GETARG_INT32(1);
 
 		if (resolution == -1)
@@ -121,10 +121,10 @@ h3_to_children(PG_FUNCTION_ARGS)
 Datum
 h3_to_center_child(PG_FUNCTION_ARGS)
 {
-	H3Index    child;
+	H3Index		child;
 
 	/* get function arguments */
-	H3Index     origin = PG_GETARG_H3INDEX(0);
+	H3Index		origin = PG_GETARG_H3INDEX(0);
 	int			childRes = PG_GETARG_INT32(1);
 	int			parentRes = h3GetResolution(origin);
 
@@ -155,23 +155,22 @@ h3_compact(PG_FUNCTION_ARGS)
 		int			result;
 		Datum		value;
 		bool		isnull;
-		int         i = 0;
+		int			i = 0;
 
 		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
 		MemoryContext oldcontext =
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		ArrayType    *array = PG_GETARG_ARRAYTYPE_P(0);
-		int			  maxSize = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		ArrayType  *array = PG_GETARG_ARRAYTYPE_P(0);
+		int			maxSize = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
 		ArrayIterator iterator = array_create_iterator(array, 0, NULL);
-		H3Index      *h3set = palloc(sizeof(H3Index) * maxSize);
-		H3Index      *compactedSet = palloc0(maxSize * sizeof(H3Index));
+		H3Index    *h3set = palloc(sizeof(H3Index) * maxSize);
+		H3Index    *compactedSet = palloc0(maxSize * sizeof(H3Index));
 
 		/* Extract data from array into h3set, and wipe compactedSet memory */
 		while (array_iterate(iterator, &value, &isnull))
 		{
-			H3Index    idx = DatumGetH3Index(value);
-			h3set[i++] = idx;
+			h3set[i++] = DatumGetH3Index(value);
 		}
 
 		result = compact(h3set, compactedSet, maxSize);
@@ -193,7 +192,7 @@ h3_uncompact(PG_FUNCTION_ARGS)
 		int			result;
 		Datum		value;
 		bool		isnull;
-		int         i = 0;
+		int			i = 0;
 		int			maxSize;
 		H3Index    *uncompactedSet;
 
@@ -211,8 +210,7 @@ h3_uncompact(PG_FUNCTION_ARGS)
 		/* Extract data from array into h3set, and wipe compactedSet memory */
 		while (array_iterate(iterator, &value, &isnull))
 		{
-			H3Index    idx = DatumGetH3Index(value);
-			h3set[i++] = idx;
+			h3set[i++] = DatumGetH3Index(value);
 		}
 
 		if (resolution == -1)
