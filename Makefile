@@ -156,12 +156,21 @@ test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE pg_regress;"
 
 ARCH_SQL = "SELECT typbyval FROM pg_type WHERE typname = 'h3index';"
-ARCH_BOOL != if [ $(ARCH) == "amd64" ]; then echo "t"; else echo "f"; fi
+
+ifeq ($(ARCH),amd64)
+    ARCH_BOOL:=t
+endif
+ifeq ($(ARCH),i386)
+    ARCH_BOOL:=f
+endif
+ifndef ARCH_BOOL
+$(error Architecture not set)
+endif
 
 # rules for testing if arch determines pass by value/reference
-test/sql/ci-arch.sql: $(SQL_FULLINSTALL)
+test/sql/ci-arch-$(ARCH).sql: $(SQL_FULLINSTALL)
 	echo $(ARCH_SQL) > $@
-test/expected/ci-arch.out: $(SQL_UPDATES)
+test/expected/ci-arch-$(ARCH).out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -d pg_regress -c "CREATE EXTENSION postgis;"
@@ -198,5 +207,5 @@ test/sql/ci-bindings.sql: test/expected/ci-install.out /tmp/extra-functions
 		| sort | uniq \
 	)'" > $@
 
-ci: test/sql/ci-arch.sql test/expected/ci-arch.out test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
+ci: test/sql/ci-arch-$(ARCH).sql test/expected/ci-arch-$(ARCH).out test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
 .PHONY: ci format

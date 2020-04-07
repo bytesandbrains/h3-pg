@@ -2,8 +2,10 @@ ARG ARCH=amd64
 ARG UBUNTU=bionic
 FROM $ARCH/ubuntu:$UBUNTU
 
+ARG ARCH
 ARG UBUNTU
 ENV DEBIAN_FRONTEND=noninteractive
+ENV ARCH=$ARCH
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -28,7 +30,5 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /github/workspace
 
 COPY entrypoint.sh /entrypoint.sh
-
-ENV ARCH $ARCH
 
 ENTRYPOINT ["/entrypoint.sh"]
