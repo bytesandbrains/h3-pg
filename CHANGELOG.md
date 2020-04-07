@@ -27,8 +27,8 @@ avoid adding features or APIs which do not map onto the
   </summary>
 
 - Add parallel safety flags to PostGIS functions (see [#19], thanks [@komzpa])
-- Free `PF_GETARG` pointers if copy (see [#22], thanks [@komzpa])
-- Add B-Tree sort support function (see [#24], thanks [@komzpa])
+- Add B-Tree sort support (see [#24], thanks [@komzpa])
+- ⚠️ Make type `h3index` pass-by-value on supported systems (see [#22], [#26], thanks [@komzpa])
 - Update `h3` core library to `v3.6.3`
 
 </details>
@@ -137,5 +137,6 @@ avoid adding features or APIs which do not map onto the
 [#19]: https://github.com/bytesandbrains/h3-pg/pull/19
 [#22]: https://github.com/bytesandbrains/h3-pg/pull/22
 [#24]: https://github.com/bytesandbrains/h3-pg/pull/24
+[#26]: https://github.com/bytesandbrains/h3-pg/pull/26
 [@komzpa]: https://github.com/Komzpa
 [@kmacdough]: https://github.com/kmacdough
