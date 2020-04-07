@@ -132,30 +132,27 @@ EXTRA_BINDING_FUNCTIONS = \
 /tmp/extra-functions:
 	echo "$(EXTRA_BINDING_FUNCTIONS)" | tr " " "\n" > $@
 
-# rules for testing the update path against full install for functions
+PRINT_TYPES_SQL = "SELECT typname, typlen, typbyval, typalign FROM pg_type WHERE typname LIKE '%h3index' ORDER BY typname;"
+PRINT_FUNCTIONS_SQL = "\df *h3*"
+PRINT_OPERATORS_SQL = "\do"
+
+# rules for testing the update path against full install
 test/sql/ci-install.sql: $(SQL_FULLINSTALL)
-	echo "\df *h3*" > $@
+	echo $(PRINT_TYPES_SQL) > $@
+	echo $(PRINT_FUNCTIONS_SQL) >> $@
+	echo $(PRINT_OPERATORS_SQL) >> $@
 test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -d pg_regress -c "CREATE EXTENSION postgis;"
 	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION '0.1.0';"
 	psql -d pg_regress -c "ALTER EXTENSION h3 UPDATE;"
-	echo "\df *h3*" > $@
-	psql -d pg_regress -c "\df *h3*" >> $@
-	psql -c "DROP DATABASE pg_regress;"
-
-# rules for testing the update path against full install for operators
-test/sql/ci-operators.sql: $(SQL_FULLINSTALL)
-	echo "\do" > $@
-test/expected/ci-operators.out: $(SQL_UPDATES)
-	psql -c "DROP DATABASE IF EXISTS pg_regress;"
-	psql -c "CREATE DATABASE pg_regress;"
-	psql -d pg_regress -c "CREATE EXTENSION postgis;"
-	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION '0.1.0';"
-	psql -d pg_regress -c "ALTER EXTENSION h3 UPDATE;"
-	echo "\do" > $@
-	psql -d pg_regress -c "\do" >> $@
+	echo $(PRINT_TYPES_SQL) > $@
+	psql -d pg_regress -c $(PRINT_TYPES_SQL) >> $@
+	echo $(PRINT_FUNCTIONS_SQL) >> $@
+	psql -d pg_regress -c $(PRINT_FUNCTIONS_SQL) >> $@
+	echo $(PRINT_OPERATORS_SQL) >> $@
+	psql -d pg_regress -c $(PRINT_OPERATORS_SQL) >> $@
 	psql -c "DROP DATABASE pg_regress;"
 
 # generate expected bindings from h3 generated binding function list
@@ -186,5 +183,5 @@ test/sql/ci-bindings.sql: test/expected/ci-install.out /tmp/extra-functions
 		| sort | uniq \
 	)'" > $@
 
-ci: test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-operators.sql test/expected/ci-operators.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
+ci: test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
 .PHONY: ci format
