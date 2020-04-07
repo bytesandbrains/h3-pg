@@ -13,4 +13,4 @@ jobs:
       - name: Login to repository
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u "$GITHUB_ACTOR" --password-stdin
       - name: Test
-        run: docker run -v /github/workspace:/github/workspace docker.pkg.github.com/bytesandbrains/h3-pg/test:${{ matrix.arch }}
+        run: docker run -v $(PWD):/github/workspace docker.pkg.github.com/bytesandbrains/h3-pg/test:${{ matrix.arch }}
