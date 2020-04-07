@@ -155,6 +155,21 @@ test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -d pg_regress -c $(PRINT_OPERATORS_SQL) >> $@
 	psql -c "DROP DATABASE pg_regress;"
 
+ARCH_SQL = "SELECT typbyval FROM pg_type WHERE typname = 'h3index';"
+ARCH_BOOL != if [ $(ARCH) == "amd64" ]; then echo "t"; else echo "f"; fi
+
+# rules for testing if arch determines pass by value/reference
+test/sql/ci-arch.sql: $(SQL_FULLINSTALL)
+	echo $(ARCH_SQL) > $@
+test/expected/ci-arch.out: $(SQL_UPDATES)
+	psql -c "DROP DATABASE IF EXISTS pg_regress;"
+	psql -c "CREATE DATABASE pg_regress;"
+	psql -d pg_regress -c "CREATE EXTENSION postgis;"
+	psql -d pg_regress -c "CREATE EXTENSION h3;"
+	echo $(ARCH_SQL) > $@
+	psql -d pg_regress -c $(ARCH_SQL) | sed '3 s/.*/ ${ARCH_BOOL}/' -   >> $@
+	psql -c "DROP DATABASE pg_regress;"
+
 # generate expected bindings from h3 generated binding function list
 test/expected/ci-bindings.out: $(LIBH3_BUILD)/binding-functions /tmp/excluded-functions
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
@@ -183,5 +198,5 @@ test/sql/ci-bindings.sql: test/expected/ci-install.out /tmp/extra-functions
 		| sort | uniq \
 	)'" > $@
 
-ci: test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
+ci: test/sql/ci-arch.sql test/expected/ci-arch.out test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
 .PHONY: ci format

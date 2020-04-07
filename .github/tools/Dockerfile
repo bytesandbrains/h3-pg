@@ -1,4 +1,4 @@
-ARG ARCH
+ARG ARCH=amd64
 ARG UBUNTU=bionic
 FROM $ARCH/ubuntu:$UBUNTU
 
@@ -28,5 +28,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /github/workspace
 
 COPY entrypoint.sh /entrypoint.sh
+
+ENV ARCH $ARCH
 
 ENTRYPOINT ["/entrypoint.sh"]
