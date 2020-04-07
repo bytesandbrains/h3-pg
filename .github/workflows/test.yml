@@ -5,6 +5,10 @@ on: [push, pull_request]
 jobs:
   ubuntu:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, i386]
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/test
+      - name: Test
+        run: docker run -v /github/workspace:/github/workspace docker.pkg.github.com/bytesandbrains/h3-pg/test:${{ matrix.arch }}
