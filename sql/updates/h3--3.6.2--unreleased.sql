@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Bytes & Brains
+ * Copyright 2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,4 @@
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
 
--- add sort support (see #24)
-CREATE OR REPLACE FUNCTION h3index_sortsupport(internal)
-	RETURNS void
-	AS 'h3', 'h3index_sortsupport'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
-ALTER OPERATOR family btree_h3index_ops USING btree ADD FUNCTION 2 (h3index) h3index_sortsupport(internal);
-
--- pass-by-value on supported systems (see #26)
-UPDATE pg_type AS sink
-SET typbyval = source.typbyval FROM (
-	SELECT typbyval FROM pg_type WHERE typname = 'int8'
-) source
-WHERE typname = 'h3index';
+-- no unreleased changes yet

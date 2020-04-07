@@ -160,11 +160,8 @@ ARCH_SQL = "SELECT typbyval FROM pg_type WHERE typname = 'h3index';"
 ifeq ($(ARCH),amd64)
     ARCH_BOOL:=t
 endif
-ifeq ($(ARCH),i386)
-    ARCH_BOOL:=f
-endif
 ifndef ARCH_BOOL
-$(error Architecture not set)
+	ARCH_BOOL:=f
 endif
 
 # rules for testing if arch determines pass by value/reference
