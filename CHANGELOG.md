@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Build `h3` core using release flag for 2x/3x performance (see [#23], thanks [@komzpa])
+
 </details>
 
 ## [3.6.2] - 2020-04-07
@@ -139,6 +141,7 @@ avoid adding features or APIs which do not map onto the
 [#18]: https://github.com/bytesandbrains/h3-pg/pull/18
 [#19]: https://github.com/bytesandbrains/h3-pg/pull/19
 [#22]: https://github.com/bytesandbrains/h3-pg/pull/22
+[#23]: https://github.com/bytesandbrains/h3-pg/issues/23
 [#24]: https://github.com/bytesandbrains/h3-pg/pull/24
 [#26]: https://github.com/bytesandbrains/h3-pg/pull/26
 [@komzpa]: https://github.com/Komzpa
