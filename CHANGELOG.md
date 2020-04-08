@@ -26,9 +26,11 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-- Build `h3` core using release flag for 2x/3x performance (see [#23], thanks [@komzpa])
-
 </details>
+
+## [3.6.3] - 2020-04-08
+
+- Build `h3` core using release flag for 2x/3x performance (see [#23], thanks [@komzpa])
 
 ## [3.6.2] - 2020-04-07
 
@@ -119,7 +121,8 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.2...HEAD
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.3...HEAD
+[3.6.3]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.2...v3.6.3
 [3.6.2]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...v3.6.2
 [3.6.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...v3.6.1
 [3.6.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.5.0...v3.6.0
