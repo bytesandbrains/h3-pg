@@ -19,7 +19,7 @@ EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
 # h3 core library version to clone and statically link
-LIBH3_VERSION = v3.6.3
+LIBH3_VERSION = v3.6.4
 # directory that h3 core repository is cloned into
 LIBH3_SOURCE = libh3-$(LIBH3_VERSION)
 # h3 static library location
