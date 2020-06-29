@@ -26,8 +26,11 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-  - Update `h3` core library to `v3.6.4`
 </details>
+
+## [3.6.4] - 2020-06-29
+
+- Update `h3` core library to `v3.6.4`
 
 ## [3.6.3] - 2020-04-08
 
@@ -122,7 +125,8 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.3...HEAD
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.4...HEAD
+[3.6.4]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.3...v3.6.4
 [3.6.3]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.2...v3.6.3
 [3.6.2]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...v3.6.2
 [3.6.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...v3.6.1
