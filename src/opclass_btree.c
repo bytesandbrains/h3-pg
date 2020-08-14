@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 #include <postgres.h>		 // Datum, etc.
 #include <fmgr.h>			 // PG_FUNCTION_ARGS, etc.
+#include "utils/sortsupport.h"	/* SortSupport */
 
 #include <h3api.h> // Main H3 include
 #include "extension.h"
@@ -25,13 +26,77 @@ PG_FUNCTION_INFO_V1(h3index_cmp);
 Datum
 h3index_cmp(PG_FUNCTION_ARGS)
 {
-	H3Index    *a = PG_GETARG_H3_INDEX_P(0);
-	H3Index    *b = PG_GETARG_H3_INDEX_P(1);
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
 
-	if (*a > *b)
-		PG_RETURN_INT32(1);
-	else if (*a == *b)
-		PG_RETURN_INT32(0);
+	uint32_t	ret = 0;
+
+	if (a < b)
+		ret = 1;
+	else if (a > b)
+		ret = -1;
+
+	PG_RETURN_INT32(ret);
+}
+
+
+static int
+h3index_cmp_abbrev(Datum x, Datum y, SortSupport ssup)
+{
+	if (x == y)
+		return 0;
+	else if (x < y)
+		return 1;
 	else
-		PG_RETURN_INT32(-1);
+		return -1;
+}
+
+static int
+h3index_cmp_full(Datum x, Datum y, SortSupport ssup)
+{
+	H3Index		a = DatumGetH3Index(x);
+	H3Index		b = DatumGetH3Index(y);
+
+	if (a == b)
+		return 0;
+	else if (a < b)
+		return 1;
+	return -1;
+}
+
+static bool
+h3index_abbrev_abort(int memtupcount, SortSupport ssup)
+{
+	return 0;
+}
+
+static Datum
+h3index_abbrev_convert(Datum original, SortSupport ssup)
+{
+	H3Index		a = DatumGetH3Index(original);
+
+	return a;
+}
+
+/*
+ * Sort support strategy routine
+ */
+PG_FUNCTION_INFO_V1(h3index_sortsupport);
+Datum
+h3index_sortsupport(PG_FUNCTION_ARGS)
+{
+	SortSupport ssup = (SortSupport) PG_GETARG_POINTER(0);
+
+	ssup->comparator = h3index_cmp_full;
+	ssup->ssup_extra = NULL;
+	/* Enable sortsupport only on 64 bit Datum */
+	if (ssup->abbreviate && sizeof(Datum) == 8)
+	{
+		ssup->comparator = h3index_cmp_abbrev;
+		ssup->abbrev_converter = h3index_abbrev_convert;
+		ssup->abbrev_abort = h3index_abbrev_abort;
+		ssup->abbrev_full_comparator = h3index_cmp_full;
+	}
+
+	PG_RETURN_VOID();
 }

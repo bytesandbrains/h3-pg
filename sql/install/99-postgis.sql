@@ -61,11 +61,11 @@ CREATE OR REPLACE FUNCTION h3_polyfill(multi geometry, resolution integer) RETUR
         FROM (
             select (st_dump(multi)).geom as poly
         ) q_poly GROUP BY poly
-    ) h3_polyfill; $$ LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE;
+    ) h3_polyfill; $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 
 -- Availability: 0.3.0
 CREATE OR REPLACE FUNCTION h3_polyfill(multi geography, resolution integer) RETURNS SETOF h3index
-AS $$ SELECT h3_polyfill($1::geometry, $2) $$ LANGUAGE SQL IMMUTABLE STRICT PARALLEL SAFE;
+AS $$ SELECT h3_polyfill($1::geometry, $2) $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- PostGIS Cast

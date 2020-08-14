@@ -11,3 +11,4 @@ SELECT COUNT(hex) = 122 FROM (
 ) q;
  t
 
+CREATE TABLE h3_test_hash_part (hex h3index PRIMARY KEY) PARTITION BY HASH (hex);

@@ -19,7 +19,7 @@ EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
 # h3 core library version to clone and statically link
-LIBH3_VERSION = v3.6.3
+LIBH3_VERSION = v3.6.4
 # directory that h3 core repository is cloned into
 LIBH3_SOURCE = libh3-$(LIBH3_VERSION)
 # h3 static library location
@@ -80,6 +80,7 @@ $(LIBH3_SOURCE):
 $(LIBH3_BUILD): $(LIBH3_SOURCE)
 	mkdir -p $(LIBH3_BUILD)
 	cd $(LIBH3_BUILD) && cmake \
+		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_C_FLAGS=-fPIC \
 		-DBUILD_TESTING=OFF \
 		-DENABLE_COVERAGE=OFF \
@@ -132,30 +133,52 @@ EXTRA_BINDING_FUNCTIONS = \
 /tmp/extra-functions:
 	echo "$(EXTRA_BINDING_FUNCTIONS)" | tr " " "\n" > $@
 
-# rules for testing the update path against full install for functions
+PRINT_TYPES_SQL = "SELECT typname, typlen, typbyval, typalign FROM pg_type WHERE typname LIKE '%h3index' ORDER BY typname;"
+PRINT_FUNCTIONS_SQL = "\df *h3*"
+PRINT_FUNCFLAGS_SQL = "SELECT proname, proisstrict, provolatile, proparallel FROM pg_proc WHERE proname LIKE '%h3%' ORDER BY proname;"
+PRINT_OPERATORS_SQL = "\do"
+
+# rules for testing the update path against full install
 test/sql/ci-install.sql: $(SQL_FULLINSTALL)
-	echo "\df *h3*" > $@
+	echo $(PRINT_TYPES_SQL) > $@
+	echo $(PRINT_FUNCTIONS_SQL) >> $@
+	echo $(PRINT_FUNCFLAGS_SQL) >> $@
+	echo $(PRINT_OPERATORS_SQL) >> $@
 test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -d pg_regress -c "CREATE EXTENSION postgis;"
 	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION '0.1.0';"
 	psql -d pg_regress -c "ALTER EXTENSION h3 UPDATE;"
-	echo "\df *h3*" > $@
-	psql -d pg_regress -c "\df *h3*" >> $@
+	echo $(PRINT_TYPES_SQL) > $@
+	psql -d pg_regress -c $(PRINT_TYPES_SQL) >> $@
+	echo $(PRINT_FUNCTIONS_SQL) >> $@
+	psql -d pg_regress -c $(PRINT_FUNCTIONS_SQL) >> $@
+	echo $(PRINT_FUNCFLAGS_SQL) >> $@
+	psql -d pg_regress -c $(PRINT_FUNCFLAGS_SQL) >> $@
+	echo $(PRINT_OPERATORS_SQL) >> $@
+	psql -d pg_regress -c $(PRINT_OPERATORS_SQL) >> $@
 	psql -c "DROP DATABASE pg_regress;"
 
-# rules for testing the update path against full install for operators
-test/sql/ci-operators.sql: $(SQL_FULLINSTALL)
-	echo "\do" > $@
-test/expected/ci-operators.out: $(SQL_UPDATES)
+ARCH_SQL = "SELECT typbyval FROM pg_type WHERE typname = 'h3index';"
+
+ifeq ($(ARCH),amd64)
+    ARCH_BOOL:=t
+endif
+ifndef ARCH_BOOL
+	ARCH_BOOL:=f
+endif
+
+# rules for testing if arch determines pass by value/reference
+test/sql/ci-arch-$(ARCH).sql: $(SQL_FULLINSTALL)
+	echo $(ARCH_SQL) > $@
+test/expected/ci-arch-$(ARCH).out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -d pg_regress -c "CREATE EXTENSION postgis;"
-	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION '0.1.0';"
-	psql -d pg_regress -c "ALTER EXTENSION h3 UPDATE;"
-	echo "\do" > $@
-	psql -d pg_regress -c "\do" >> $@
+	psql -d pg_regress -c "CREATE EXTENSION h3;"
+	echo $(ARCH_SQL) > $@
+	psql -d pg_regress -c $(ARCH_SQL) | sed '3 s/.*/ ${ARCH_BOOL}/' -   >> $@
 	psql -c "DROP DATABASE pg_regress;"
 
 # generate expected bindings from h3 generated binding function list
@@ -186,5 +209,5 @@ test/sql/ci-bindings.sql: test/expected/ci-install.out /tmp/extra-functions
 		| sort | uniq \
 	)'" > $@
 
-ci: test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-operators.sql test/expected/ci-operators.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
+ci: test/sql/ci-arch-$(ARCH).sql test/expected/ci-arch-$(ARCH).out test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
 .PHONY: ci format

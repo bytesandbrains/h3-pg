@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,28 +33,29 @@ h3_geo_to_h3(PG_FUNCTION_ARGS)
 	Point	   *geo = PG_GETARG_POINT_P(0);
 	int			resolution = PG_GETARG_INT32(1);
 
-	H3Index    *idx = palloc(sizeof(H3Index));
+	H3Index		idx;
 	GeoCoord	location;
 
 	location.lon = degsToRads(geo->x);
 	location.lat = degsToRads(geo->y);
 
-	*idx = geoToH3(&location, resolution);
-	ASSERT_EXTERNAL(*idx, "Indexing failed at specified resolution.");
+	idx = geoToH3(&location, resolution);
+	ASSERT_EXTERNAL(idx, "Indexing failed at specified resolution.");
 
-	PG_RETURN_H3_INDEX_P(idx);
+	PG_FREE_IF_COPY(geo, 0);
+	PG_RETURN_H3INDEX(idx);
 }
 
 /* Finds the centroid of the index */
 Datum
 h3_to_geo(PG_FUNCTION_ARGS)
 {
-	H3Index    *idx = PG_GETARG_H3_INDEX_P(0);
+	H3Index		idx = PG_GETARG_H3INDEX(0);
 
 	Point	   *geo = palloc(sizeof(Point));
 	GeoCoord	center;
 
-	h3ToGeo(*idx, &center);
+	h3ToGeo(idx, &center);
 
 	geo->x = radsToDegs(center.lon);
 	geo->y = radsToDegs(center.lat);
@@ -66,7 +67,7 @@ h3_to_geo(PG_FUNCTION_ARGS)
 Datum
 h3_to_geo_boundary(PG_FUNCTION_ARGS)
 {
-	H3Index    *idx = PG_GETARG_H3_INDEX_P(0);
+	H3Index		idx = PG_GETARG_H3INDEX(0);
 	bool		extend = PG_GETARG_BOOL(1);
 
 	double		delta,
@@ -78,7 +79,7 @@ h3_to_geo_boundary(PG_FUNCTION_ARGS)
 	POLYGON    *polygon;
 	GeoBoundary boundary;
 
-	h3ToGeoBoundary(*idx, &boundary);
+	h3ToGeoBoundary(idx, &boundary);
 
 	size = offsetof(POLYGON, p) +sizeof(polygon->p[0]) * boundary.numVerts;
 	polygon = (POLYGON *) palloc(size);

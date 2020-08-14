@@ -22,6 +22,12 @@
 CREATE OR REPLACE FUNCTION h3index_cmp(h3index, h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
+-- Availability: 3.6.2
+CREATE OR REPLACE FUNCTION h3index_sortsupport(internal)
+	RETURNS void
+	AS 'h3', 'h3index_sortsupport'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
 -- Availability: 0.1.0
 CREATE OPERATOR CLASS btree_h3index_ops DEFAULT FOR TYPE h3index USING btree AS
     OPERATOR  1  <  ,
@@ -29,4 +35,5 @@ CREATE OPERATOR CLASS btree_h3index_ops DEFAULT FOR TYPE h3index USING btree AS
     OPERATOR  3   = ,
     OPERATOR  4  >= ,
     OPERATOR  5  >  ,
-    FUNCTION  1  h3index_cmp(h3index, h3index);
+    FUNCTION  1  h3index_cmp(h3index, h3index),
+    FUNCTION  2  h3index_sortsupport(internal);

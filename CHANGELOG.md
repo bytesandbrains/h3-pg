@@ -26,10 +26,27 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-- Add parallel safety flags to PostGIS functions (see [#19], thanks [@komzpa])
-- Update `h3` core library to `v3.6.3`
-
 </details>
+
+## [3.6.5] - 2020-08-14
+
+- Add support for partitioning by hash (see [#37], thanks [@abelvm])
+- Fix difference in function flags between fresh install and upgrades (see [#38], thanks [@abelvm])
+
+## [3.6.4] - 2020-06-29
+
+- Update `h3` core library to `v3.6.4`
+
+## [3.6.3] - 2020-04-08
+
+- Build `h3` core using release flag for 2x/3x performance (see [#23], thanks [@komzpa])
+
+## [3.6.2] - 2020-04-07
+
+- Add parallel safety flags to PostGIS functions (see [#19], thanks [@komzpa])
+- Add B-Tree sort support (see [#24], thanks [@komzpa])
+- ⚠️ Make type `h3index` pass-by-value on supported systems (see [#22], [#26], thanks [@komzpa])
+- Update `h3` core library to `v3.6.3`
 
 ## [3.6.1] - 2019-12-09
 
@@ -113,7 +130,11 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...HEAD
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.5...HEAD
+[3.6.5]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.4...v3.6.5
+[3.6.4]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.3...v3.6.4
+[3.6.3]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.2...v3.6.3
+[3.6.2]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...v3.6.2
 [3.6.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...v3.6.1
 [3.6.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.5.0...v3.6.0
 [3.5.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.1...v3.5.0
@@ -133,5 +154,12 @@ avoid adding features or APIs which do not map onto the
 [#9]: https://github.com/bytesandbrains/h3-pg/pull/9
 [#18]: https://github.com/bytesandbrains/h3-pg/pull/18
 [#19]: https://github.com/bytesandbrains/h3-pg/pull/19
+[#22]: https://github.com/bytesandbrains/h3-pg/pull/22
+[#23]: https://github.com/bytesandbrains/h3-pg/issues/23
+[#24]: https://github.com/bytesandbrains/h3-pg/pull/24
+[#26]: https://github.com/bytesandbrains/h3-pg/pull/26
+[#37]: https://github.com/bytesandbrains/h3-pg/issues/37
+[#38]: https://github.com/bytesandbrains/h3-pg/issues/38
+[@abelvm]: https://github.com/AbelVM
 [@komzpa]: https://github.com/Komzpa
 [@kmacdough]: https://github.com/kmacdough

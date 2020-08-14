@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Bytes & Brains
+ * Copyright 2020 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,4 +15,6 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3 UPDATE TO '3.6.3'" to load this file. \quit
+
+-- no changes
