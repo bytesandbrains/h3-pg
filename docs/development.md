@@ -12,6 +12,8 @@ so output can be inspected.
 1. Update version number
     * Don't follow semver, simply use major and minor from H3 core and increment patch.
     * Version number should be changed in `h3.control` and `META.json`.
+    * Update file suffixed `--unreleased` should be renamed.
+    * Update changelog by moving from `Unreleased` to a new section
 2. Create a release on GitHub
     * Draft new release "vX.Y.Z"
     * Copy CHANGELOG.md entry into release description

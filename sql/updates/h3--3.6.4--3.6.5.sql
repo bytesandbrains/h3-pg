@@ -15,7 +15,7 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3 UPDATE TO '3.6.5'" to load this file. \quit
 
 -- Fix function flags which were previously only changed in install files
 ALTER FUNCTION h3_get_h3_unidirectional_edge_boundary(h3index)

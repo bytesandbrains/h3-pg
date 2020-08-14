@@ -26,10 +26,12 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+</details>
+
+## [3.6.5] - 2020-08-14
+
 - Add support for partitioning by hash (see [#37], thanks [@abelvm])
 - Fix difference in function flags between fresh install and upgrades (see [#38], thanks [@abelvm])
-
-</details>
 
 ## [3.6.4] - 2020-06-29
 
@@ -128,7 +130,8 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.4...HEAD
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.5...HEAD
+[3.6.5]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.4...v3.6.5
 [3.6.4]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.3...v3.6.4
 [3.6.3]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.2...v3.6.3
 [3.6.2]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...v3.6.2
