@@ -26,21 +26,42 @@
 #define H3_ROOT_INDEX -1
 
 static int
-gist_cmp(H3Index * a, H3Index * b)
+static int
+gist_cmp(H3Index  * a, H3Index * b)
 {
-	int			aRes = h3GetResolution(*a);
-	int			bRes = h3GetResolution(*b);
-	H3Index		aParent = h3ToParent(*a, bRes);
-	H3Index		bParent = h3ToParent(*b, aRes);
+	int			aRes;
+	int			bRes;
+
+	uint64_t	cellMask = (1 << 45) - 1;	/* rightmost 45 bits*/
+	uint64_t	aCell;
+	uint64_t	bCell;
+	uint64_t	mask;
+
+    /* identity */
+    if (*a == *b)
+	{
+		return 1;
+	}
+
+    /* no shared basecell */
+    if (H3_GET_BASE_CELL(*a) != H3_GET_BASE_CELL(*b))
+	{
+		return 0;
+	}
+
+	aRes = H3_GET_RESOLUTION(*a);
+	bRes = H3_GET_RESOLUTION(*b);
+	aCell = *a & cellMask;
+	bCell = *b & cellMask;
 
 	/* a contains b */
-	if (*a == H3_ROOT_INDEX || *a == bParent)
+	if (*a == H3_ROOT_INDEX || (aCell^bCell) >> (45 - 3 * aRes) == 0)
 	{
 		return 1;
 	}
 
 	/* a contained by b */
-	if (*b == H3_ROOT_INDEX || *b == aParent)
+	if (*b == H3_ROOT_INDEX || (aCell^bCell) >> (45 - 3 * bRes) == 0)
 	{
 		return -1;
 	}
@@ -56,24 +77,48 @@ gist_cmp(H3Index * a, H3Index * b)
 static H3Index
 common_ancestor(H3Index a, H3Index b)
 {
-	H3Index		aParent,
-				bParent;
-	int			res = h3GetResolution(a);
-	int			bRes = h3GetResolution(b);
+	int			aRes;
+	int			bRes;
+	int			maxRes; 
+	uint64_t	cellMask = (1 << 45) - 1;	/* rightmost 45 bits*/
+	uint64_t	abCell;
 
-	if (bRes < res)
-		res = bRes;
-
-	for (int i = res; i >= 0; i--)
+	if (a == b)
 	{
-		aParent = h3ToParent(a, i);
-		bParent = h3ToParent(b, i);
-		if (aParent == bParent)
-			return aParent;
+		return a;
+	}
+
+    /* do not even share the basecell */
+    if (H3_GET_BASE_CELL(a) != H3_GET_BASE_CELL(b))
+	{
+		return H3_ROOT_INDEX;
+	}
+
+	/* intersections at res 1-15 */
+	abCell = a & b & cellMask;
+
+	/* basecell as the only common ancestor */
+	if(abCell == 0)
+	{
+		return H3_SET_RESOLUTION(a | cellMask, 0);
+	} 
+
+	/* common ancestor at resolution > 0 */
+	aRes = H3_GET_RESOLUTION(a);
+	bRes = H3_GET_RESOLUTION(b);
+	maxRes = (aRes < bRes) ? aRes : bRes;
+	for (int i = maxRes; i > 0; i--)
+	{
+		if(abCell >> (i * 3) == 0)
+		{
+			mask = (1 << (i * 3)) - 1;
+			return H3_SET_RESOLUTION(a | mask, i);
+		}
 	}
 
 	return H3_ROOT_INDEX;
 }
+
 
 /**
  * The GiST Consistent method for H3 indexes
@@ -179,7 +224,7 @@ h3index_gist_penalty(PG_FUNCTION_ARGS)
 
 	H3Index		ancestor = common_ancestor(*orig, *new);
 
-	*penalty = (float) h3GetResolution(*orig) - h3GetResolution(ancestor);
+	*penalty = (float) H3_GET_RESOLUTION(*orig) - H3_GET_RESOLUTION(ancestor);
 
 	PG_RETURN_POINTER(penalty);
 }
@@ -291,8 +336,8 @@ h3index_gist_distance(PG_FUNCTION_ARGS)
 	H3Index    *key = DatumGetH3IndexP(entry->key);
 
 	/*
-	 * int			 aRes = h3GetResolution(*query); int		 bRes =
-	 * h3GetResolution(*key); H3Index	  aParent = h3ToCenterChild(*query,
+	 * int			 aRes = H3_GET_RESOLUTION(*query); int		 bRes =
+	 * H3_GET_RESOLUTION(*key); H3Index	  aParent = h3ToCenterChild(*query,
 	 * bRes); H3Index	  bParent = h3ToCenterChild(*key, aRes);
 	 */
 
