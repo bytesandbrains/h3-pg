@@ -26,7 +26,6 @@
 #define H3_ROOT_INDEX -1
 
 static int
-static int
 gist_cmp(H3Index  * a, H3Index * b)
 {
 	int			aRes;
@@ -118,7 +117,6 @@ common_ancestor(H3Index a, H3Index b)
 
 	return H3_ROOT_INDEX;
 }
-
 
 /**
  * The GiST Consistent method for H3 indexes
@@ -224,7 +222,7 @@ h3index_gist_penalty(PG_FUNCTION_ARGS)
 
 	H3Index		ancestor = common_ancestor(*orig, *new);
 
-	*penalty = (float) H3_GET_RESOLUTION(*orig) - H3_GET_RESOLUTION(ancestor);
+	*penalty = (float) h3GetResolution(*orig) - h3GetResolution(ancestor);
 
 	PG_RETURN_POINTER(penalty);
 }
@@ -336,8 +334,8 @@ h3index_gist_distance(PG_FUNCTION_ARGS)
 	H3Index    *key = DatumGetH3IndexP(entry->key);
 
 	/*
-	 * int			 aRes = H3_GET_RESOLUTION(*query); int		 bRes =
-	 * H3_GET_RESOLUTION(*key); H3Index	  aParent = h3ToCenterChild(*query,
+	 * int			 aRes = h3GetResolution(*query); int		 bRes =
+	 * h3GetResolution(*key); H3Index	  aParent = h3ToCenterChild(*query,
 	 * bRes); H3Index	  bParent = h3ToCenterChild(*key, aRes);
 	 */
 
