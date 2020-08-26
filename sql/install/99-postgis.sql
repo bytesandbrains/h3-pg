@@ -20,7 +20,7 @@
 
 -- Availability: 0.3.0
 CREATE OR REPLACE FUNCTION h3_geo_to_h3(geometry, resolution integer) RETURNS h3index
-    AS $$ SELECT h3_geo_to_h3($1::point, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+    AS $$ SELECT h3_geo_to_h3(ST_Transform($1, 4326)::point, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 0.3.0
 CREATE OR REPLACE FUNCTION h3_geo_to_h3(geography, resolution integer) RETURNS h3index

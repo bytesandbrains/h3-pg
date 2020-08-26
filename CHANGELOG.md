@@ -31,6 +31,8 @@ avoid adding features or APIs which do not map onto the
 
 </details>
 
+- Add input validation in geoToH3 (see [#41], thanks [@trylinka])
+
 ## [3.6.5] - 2020-08-14
 
 - Add support for partitioning by hash (see [#37], thanks [@abelvm])
@@ -163,6 +165,8 @@ avoid adding features or APIs which do not map onto the
 [#26]: https://github.com/bytesandbrains/h3-pg/pull/26
 [#37]: https://github.com/bytesandbrains/h3-pg/issues/37
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
+[#41]: https://github.com/bytesandbrains/h3-pg/issues/41
 [@abelvm]: https://github.com/AbelVM
 [@komzpa]: https://github.com/Komzpa
 [@kmacdough]: https://github.com/kmacdough
+[@trylinka]: https://github.com/trylinka
