@@ -28,6 +28,7 @@ avoid adding features or APIs which do not map onto the
 
 - Add distance operator `<->`
 - Fix `h3_to_geography` and `h3_to_geometry` refering to removed functions if extension was upgraded from pre-1.0
+- Add `gist` operator class (see [#42], thanks [@abelvm])
 
 </details>
 
@@ -163,6 +164,7 @@ avoid adding features or APIs which do not map onto the
 [#26]: https://github.com/bytesandbrains/h3-pg/pull/26
 [#37]: https://github.com/bytesandbrains/h3-pg/issues/37
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
+[#42]: https://github.com/bytesandbrains/h3-pg/issues/42
 [@abelvm]: https://github.com/AbelVM
 [@komzpa]: https://github.com/Komzpa
 [@kmacdough]: https://github.com/kmacdough
