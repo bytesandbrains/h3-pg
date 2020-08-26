@@ -36,9 +36,6 @@ h3_geo_to_h3(PG_FUNCTION_ARGS)
 	H3Index		idx;
 	GeoCoord	location;
 
-    ASSERT_EXTERNAL(geo->x >= -180 && geo->x <= 180, "Longitude must be between -180 and 180 degrees inclusive, but got %f.", geo->x);
-    ASSERT_EXTERNAL(geo->y >= -90 && geo->y <= 90, "Latitude must be between -90 and 90 degrees inclusive, but got %f.", geo->y);
-
 	location.lon = degsToRads(geo->x);
 	location.lat = degsToRads(geo->y);
 
