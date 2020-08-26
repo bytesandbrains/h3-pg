@@ -24,3 +24,11 @@ CREATE FUNCTION h3_test_postgis_nounit() RETURNS boolean LANGUAGE PLPGSQL
     $$;
 
 SELECT h3_test_postgis_nounit();
+
+\set lon 55.6677199224442
+\set lat 12.592131261648213
+SELECT h3_geo_to_h3(POINT(:lon,       :lat), 7)
+     = h3_geo_to_h3(POINT(:lon + 360, :lat), 7);
+
+SELECT h3_geo_to_h3(POINT(:lon, :lat      ), 7)
+     = h3_geo_to_h3(POINT(:lon, :lat + 360), 7);
