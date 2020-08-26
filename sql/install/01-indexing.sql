@@ -19,9 +19,9 @@
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 0.2.0
-CREATE OR REPLACE FUNCTION h3_geo_to_h3(point, resolution integer) RETURNS h3index
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(point, resolution integer, strict BOOLEAN default FALSE) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_geo_to_h3(point, resolution integer) IS
+    COMMENT ON FUNCTION h3_geo_to_h3(point, resolution integer, boolean) IS
 'Indexes the location at the specified resolution';
 
 -- Availability: 1.0.0

@@ -29,3 +29,17 @@ CREATE OR REPLACE FUNCTION h3_to_geometry(h3index) RETURNS geometry
   AS $$ SELECT ST_SetSRID(h3_to_geo($1)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 CREATE OR REPLACE FUNCTION h3_to_geography(h3index) RETURNS geography
   AS $$ SELECT h3_to_geometry($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+
+DROP FUNCTION IF EXISTS h3_geo_to_h3(point, integer);
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(point, resolution integer, strict BOOLEAN default FALSE) RETURNS h3index
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_geo_to_h3(point, integer, boolean) IS
+'Indexes the location at the specified resolution';
+
+DROP FUNCTION IF EXISTS h3_geo_to_h3(geometry, integer);
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(geometry, resolution integer, strict BOOLEAN default FALSE) RETURNS h3index
+    AS $$ SELECT h3_geo_to_h3($1::point, $2, $3); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+
+DROP FUNCTION IF EXISTS h3_geo_to_h3(geography, integer);
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(geography, resolution integer, strict BOOLEAN default FALSE) RETURNS h3index
+    AS $$ SELECT h3_geo_to_h3($1::geometry, $2, $3); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;

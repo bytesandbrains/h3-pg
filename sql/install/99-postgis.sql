@@ -19,12 +19,12 @@
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 0.3.0
-CREATE OR REPLACE FUNCTION h3_geo_to_h3(geometry, resolution integer) RETURNS h3index
-    AS $$ SELECT h3_geo_to_h3(ST_Transform($1, 4326)::point, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(geometry, resolution integer, strict BOOLEAN default FALSE) RETURNS h3index
+    AS $$ SELECT h3_geo_to_h3($1::point, $2, $3); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 0.3.0
-CREATE OR REPLACE FUNCTION h3_geo_to_h3(geography, resolution integer) RETURNS h3index
-    AS $$ SELECT h3_geo_to_h3($1::geometry, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(geography, resolution integer, strict BOOLEAN default FALSE) RETURNS h3index
+    AS $$ SELECT h3_geo_to_h3($1::geometry, $2, $3); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 -- Availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geometry(h3index) RETURNS geometry
