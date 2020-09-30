@@ -131,7 +131,7 @@ CREATE OPERATOR <@ (
     RESTRICT = contsel, JOIN = contjoinsel
 );
 
--- Availability: unreleased
+-- Availability: 3.7.0
 CREATE OPERATOR <-> (
   LEFTARG = h3index,
   RIGHTARG = h3index,

@@ -26,6 +26,10 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+</details>
+
+## [3.7.0] - 2020-09-30
+
 - ⚠️ Default unit for `h3_hex_area` and `h3_edge_length` changed to kilometers
 - Update `h3` core library to `v3.7.0`
 - Add `h3_point_dist` and `h3_exact_edge_length` bindings
@@ -33,8 +37,6 @@ avoid adding features or APIs which do not map onto the
 - Fix `h3_to_geography` and `h3_to_geometry` refering to removed functions if extension was upgraded from pre-1.0
 - Add optional input validation in geoToH3 (see [#41], thanks [@trylinka])
 - Support unit as string argument in `h3_hex_area` and `h3_edge_length` (and flag previous version for deprecation)
-
-</details>
 
 ## [3.6.5] - 2020-08-14
 
@@ -140,7 +142,8 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.5...HEAD
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.0...HEAD
+[3.7.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.5...v3.7.0
 [3.6.5]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.4...v3.6.5
 [3.6.4]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.3...v3.6.4
 [3.6.3]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.2...v3.6.3
