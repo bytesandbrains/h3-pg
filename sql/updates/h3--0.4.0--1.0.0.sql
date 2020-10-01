@@ -44,9 +44,9 @@ ALTER FUNCTION h3_h3_to_parent(h3index,integer) RENAME TO h3_to_parent;
 ALTER FUNCTION h3_h3_to_string(h3index) RENAME TO h3_to_string;
 ALTER FUNCTION h3_h3_unidirectional_edge_is_valid(h3index) RENAME TO h3_unidirectional_edge_is_valid;
 
-CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geometry(h3index, extend BOOLEAN default FALSE) RETURNS geometry
+CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geometry(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geometry
   AS $$ SELECT ST_SetSRID(h3_to_geo_boundary($1, $2)::geometry, 4326) $$ LANGUAGE SQL;
-CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geography(h3index, extend BOOLEAN default FALSE) RETURNS geography
+CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geography(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geography
   AS $$ SELECT h3_to_geo_boundary_geometry($1, $2)::geography $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION h3_to_children_slow(index h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index

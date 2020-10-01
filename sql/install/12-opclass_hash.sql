@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- Hash Operator Class (opclass_hash.c)
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- Hash operator class
 
--- Availability: 1.0.0
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_hash(h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
--- Availability: 3.6.5
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_hash_extended(h3index, int8) RETURNS int8
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
--- Availability: 1.0.0
+--@ internal
 CREATE OPERATOR CLASS hash_h3index_ops DEFAULT FOR TYPE h3index USING hash AS
     OPERATOR  1  = ,
     FUNCTION  1  h3index_hash(h3index),

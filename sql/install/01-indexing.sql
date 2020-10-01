@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- Indexing Functions (indexing.c)
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| # Indexing functions
+--|
+--| These function are used for finding the H3 index containing coordinates,
+--| and for finding the center and boundary of H3 indexes.
 
--- Availability: 0.2.0
+--@ availability: 0.2.0
 CREATE OR REPLACE FUNCTION h3_geo_to_h3(point, resolution integer) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_geo_to_h3(point, resolution integer) IS
+    COMMENT ON FUNCTION h3_geo_to_h3(point, integer) IS
 'Indexes the location at the specified resolution';
 
--- Availability: 1.0.0
+--@ availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_to_geo(h3index) RETURNS point
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_geo(h3index) IS
 'Finds the centroid of the index';
 
--- Availability: 1.0.0
-CREATE OR REPLACE FUNCTION h3_to_geo_boundary(h3index, extend_at_meridian BOOLEAN default FALSE) RETURNS polygon
+--@ availability: 1.0.0
+CREATE OR REPLACE FUNCTION h3_to_geo_boundary(h3index, extend_at_meridian BOOLEAN DEFAULT FALSE) RETURNS polygon
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_geo_boundary(h3index, boolean) IS
 'Finds the boundary of the index, second argument extends coordinates when crossing 180th meridian to help visualization';

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- Extension Specific Functions (extension.c)
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| # Extension specific functions
 
--- Availability: 1.0.0
+--@ availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS text
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_extension_version() IS

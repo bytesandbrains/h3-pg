@@ -14,41 +14,43 @@
  * limitations under the License.
  */
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- Index Inspection Functions (inspection.c)
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| # Index inspection functions
+--|
+--| These functions provide metadata about an H3 index, such as its resolution
+--| or base cell, and provide utilities for converting into and out of the
+--| 64-bit representation of an H3 index.
 
--- Availability: 1.0.0
+--@ availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_get_resolution(h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_resolution(h3index) IS
 'Returns the resolution of the index';
 
--- Availability: 1.0.0
+--@ availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_get_base_cell(h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_base_cell(h3index) IS
 'Returns the base cell number of the index';
 
--- Availability: 1.0.0
+--@ availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_is_valid(h3index) RETURNS bool
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_is_valid(h3index) IS
 'Returns true if the given H3Index is valid';
 
--- Availability: 1.0.0
+--@ availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_is_res_class_iii(h3index) RETURNS bool
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_is_res_class_iii(h3index) IS
 'Returns true if this index has a resolution with Class III orientation';  
   
--- Availability: 1.0.0
+--@ availability: 1.0.0
 CREATE OR REPLACE FUNCTION h3_is_pentagon(h3index) RETURNS bool
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_is_pentagon(h3index) IS
 'Returns true if this index represents a pentagonal cell';
 
--- Availability: 3.5.0
+--@ availability: 3.5.0
 CREATE OR REPLACE FUNCTION h3_get_faces(h3index) RETURNS integer[]
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_faces(h3index) IS

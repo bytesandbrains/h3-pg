@@ -14,40 +14,47 @@
  * limitations under the License.
  */
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- B-tree Operators
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| # Operators
 
--- Availability: 0.1.0
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| ## B-tree operators
+
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_eq(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ availability: 0.1.0
 CREATE OPERATOR = (
   LEFTARG = h3index,
   RIGHTARG = h3index,
   PROCEDURE = h3index_eq,
-  COMMUTATOR = '=',
-  NEGATOR = '<>',
+  COMMUTATOR = =,
+  NEGATOR = <>,
   RESTRICT = eqsel,
   JOIN = eqjoinsel,
   HASHES, MERGES
 );
+COMMENT ON OPERATOR = (h3index, h3index) IS
+  'Returns true if two indexes are the same';
 
--- Availability: 0.1.0
+
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_ne(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ availability: 0.1.0
 CREATE OPERATOR <> (
   LEFTARG = h3index,
   RIGHTARG = h3index,
   PROCEDURE = h3index_ne,
-  COMMUTATOR = '<>',
-  NEGATOR = '=',
+  COMMUTATOR = <>,
+  NEGATOR = =,
   RESTRICT = neqsel,
   JOIN = neqjoinsel
 );
 
--- Availability: 3.6.1
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_lt(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OPERATOR < (
   LEFTARG = h3index,
   RIGHTARG = h3index,
@@ -58,9 +65,10 @@ CREATE OPERATOR < (
   JOIN = scalarltjoinsel
 );
 
--- Availability: 3.6.1
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_le(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OPERATOR <= (
   LEFTARG = h3index,
   RIGHTARG = h3index,
@@ -71,9 +79,10 @@ CREATE OPERATOR <= (
   JOIN = scalarltjoinsel
 );
 
--- Availability: 3.6.1
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_gt(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OPERATOR > (
   LEFTARG = h3index,
   RIGHTARG = h3index,
@@ -84,9 +93,10 @@ CREATE OPERATOR > (
   JOIN = scalargtjoinsel
 );
 
--- Availability: 3.6.1
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_ge(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OPERATOR >= (
   LEFTARG = h3index,
   RIGHTARG = h3index,
@@ -98,43 +108,53 @@ CREATE OPERATOR >= (
 );
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- R-tree Operators
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| ## R-tree Operators
 
--- Availability: 3.6.1
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_overlaps(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ availability: 3.6.1
 CREATE OPERATOR && (
 	PROCEDURE = h3index_overlaps,
 	LEFTARG = h3index, RIGHTARG = h3index,
 	COMMUTATOR = &&,
     RESTRICT = contsel, JOIN = contjoinsel
 );
+COMMENT ON OPERATOR && (h3index, h3index) IS
+  'Returns true if the two H3 indexes intersect';
 
--- Availability: 3.6.1
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_contains(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ availability: 3.6.1
 CREATE OPERATOR @> (
     PROCEDURE = h3index_contains,
     LEFTARG = h3index, RIGHTARG = h3index,
     COMMUTATOR = <@,
     RESTRICT = contsel, JOIN = contjoinsel
 );
+COMMENT ON OPERATOR @> (h3index, h3index) IS
+  'Returns true if A containts B';
 
--- Availability: 3.6.1
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_contained_by(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ availability: 3.6.1
 CREATE OPERATOR <@ (
     PROCEDURE = h3index_contained_by,
     LEFTARG = h3index, RIGHTARG = h3index,
     COMMUTATOR = @>,
     RESTRICT = contsel, JOIN = contjoinsel
 );
+COMMENT ON OPERATOR <@ (h3index, h3index) IS
+  'Returns true if A is contained by B';
 
--- Availability: 3.7.0
+--@ availability: 3.7.0
 CREATE OPERATOR <-> (
   LEFTARG = h3index,
   RIGHTARG = h3index,
   PROCEDURE = h3_distance,
   COMMUTATOR = <->
 );
+COMMENT ON OPERATOR <-> (h3index, h3index) IS
+  'Returns the distance in grid cells between the two indices';

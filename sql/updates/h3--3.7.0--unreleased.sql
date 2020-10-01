@@ -15,18 +15,22 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO '3.6.2'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
 
--- add sort support (see #24)
-CREATE OR REPLACE FUNCTION h3index_sortsupport(internal)
-	RETURNS void
-	AS 'h3', 'h3index_sortsupport'
-	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-ALTER OPERATOR family btree_h3index_ops USING btree ADD FUNCTION 2 (h3index) h3index_sortsupport(internal);
+COMMENT ON OPERATOR && (h3index, h3index) IS
+  'Returns true if the two H3 indexes intersect';
 
--- pass-by-value on supported systems (see #26)
-UPDATE pg_type AS sink
-SET typbyval = source.typbyval FROM (
-	SELECT typbyval FROM pg_type WHERE typname = 'int8'
-) source
-WHERE typname = 'h3index';
+COMMENT ON OPERATOR @> (h3index, h3index) IS
+  'Returns true if A containts B';
+
+COMMENT ON OPERATOR <@ (h3index, h3index) IS
+  'Returns true if A is contained by B';
+
+COMMENT ON OPERATOR = (h3index, h3index) IS
+  'Returns true if two indexes are the same';
+
+COMMENT ON FUNCTION h3_hex_area(integer, boolean) IS
+  NULL;
+
+COMMENT ON FUNCTION h3_edge_length(integer, boolean) IS
+  NULL;

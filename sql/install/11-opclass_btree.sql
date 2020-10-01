@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- B-tree Operator Class (opclass_btree.c)
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- B-tree operator class
 
--- Availability: 0.1.0
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_cmp(h3index, h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
--- Availability: 3.6.2
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_sortsupport(internal)
 	RETURNS void
 	AS 'h3', 'h3index_sortsupport'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
--- Availability: 0.1.0
+--@ internal
 CREATE OPERATOR CLASS btree_h3index_ops DEFAULT FOR TYPE h3index USING btree AS
     OPERATOR  1  <  ,
     OPERATOR  2  <= ,

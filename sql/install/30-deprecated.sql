@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- Deprecated functions
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
-
--- Flagged for deprecation since 3.7.0
+--@ deprecated: 3.7.0
 CREATE OR REPLACE FUNCTION h3_hex_area(resolution integer, km boolean) RETURNS float
     AS $$ SELECT h3_hex_area($1, CASE WHEN $2 THEN 'km' ELSE 'm' END) $$
     IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
-    COMMENT ON FUNCTION h3_hex_area(integer, boolean) IS
-'Deprecated: use string for unit';
 
--- Flagged for deprecation since 3.7.0
+--@ deprecated: 3.7.0
 CREATE OR REPLACE FUNCTION h3_edge_length(resolution integer, km boolean) RETURNS float
     AS $$ SELECT h3_edge_length($1, CASE WHEN $2 THEN 'km' ELSE 'm' END) $$
     IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
-    COMMENT ON FUNCTION h3_edge_length(integer, boolean) IS
-'Deprecated: use string for unit';

@@ -111,6 +111,10 @@ dist:
 format: clean
 	pgindent
 
+docs/api.md: $(SQL_INSTALLS)
+	python .github/documentation/generate.py "sql/install/*" > $@
+	npx doctoc $@
+
 # functions which we have decided not to provide bindings for
 EXCLUDED_BINDING_FUNCTIONS = \
 	degs_to_rads \

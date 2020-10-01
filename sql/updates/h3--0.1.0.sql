@@ -52,8 +52,8 @@ CREATE OPERATOR = (
   LEFTARG = h3index,
   RIGHTARG = h3index,
   PROCEDURE = h3index_eq,
-  COMMUTATOR = '=',
-  NEGATOR = '<>',
+  COMMUTATOR = =,
+  NEGATOR = <>,
   RESTRICT = eqsel,
   JOIN = eqjoinsel,
   HASHES, MERGES
@@ -62,8 +62,8 @@ CREATE OPERATOR <> (
   LEFTARG = h3index,
   RIGHTARG = h3index,
   PROCEDURE = h3index_ne,
-  COMMUTATOR = '<>',
-  NEGATOR = '=',
+  COMMUTATOR = <>,
+  NEGATOR = =,
   RESTRICT = neqsel,
   JOIN = neqjoinsel
 );
