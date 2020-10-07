@@ -25,41 +25,41 @@ LIBH3_SOURCE = libh3-$(LIBH3_VERSION)
 # h3 static library location
 LIBH3_BUILD = $(LIBH3_SOURCE)/build
 # sql files used for installation, update and testing
-SQL_INSTALLS = $(wildcard sql/install/*.sql)
-SQL_UPDATES = $(wildcard sql/updates/*.sql)
-SQL_TESTS = $(wildcard test/sql/*.sql)
-SQL_FULLINSTALL = sql/$(EXTENSION)--$(EXTVERSION).sql
+SQL_INSTALLS = $(wildcard h3/sql/install/*.sql)
+SQL_UPDATES = $(wildcard h3/sql/updates/*.sql)
+SQL_TESTS = $(wildcard h3/test/sql/*.sql)
+SQL_FULLINSTALL = h3/sql/$(EXTENSION)--$(EXTVERSION).sql
 
 # a shared library to build from multiple source files
 MODULE_big = $(EXTENSION)
 # object files to be linked together
-OBJS = $(patsubst %.c,%.o,$(wildcard src/*.c))
+OBJS = $(patsubst %.c,%.o,$(wildcard h3/src/lib/*.c))
 # random files to install into $PREFIX/share/$MODULEDIR
 DATA = $(SQL_UPDATES)
 DATA_built = $(SQL_FULLINSTALL)
 # will be added to MODULE_big link line
 SHLIB_LINK += -lh3 -L$(LIBH3_BUILD)/lib
 # will be added to CPPFLAGS
-PG_CPPFLAGS += -I$(LIBH3_BUILD)/src/h3lib/include
+PG_CPPFLAGS += -I$(LIBH3_BUILD)/src/h3lib/include -Ih3/src/include
 # list of regression test cases (without suffix)
 REGRESS = $(basename $(notdir $(SQL_TESTS)))
 # additional switches to pass to pg_regress
 REGRESS_OPTS = \
-	--inputdir=test \
-	--outputdir=test \
+	--inputdir=h3/test \
+	--outputdir=h3/test \
 	--load-extension=postgis \
 	--load-extension=h3
 # extra files to remove in make clean
 EXTRA_CLEAN += \
 	$(LIBH3_SOURCE) \
 	$(DATA_built) \
-	src/extension.h \
-	$(wildcard test/sql/ci-*.sql) \
-	$(wildcard test/expected/ci-*.out) \
+	src/include/extension.h \
+	$(wildcard h3/test/sql/ci-*.sql) \
+	$(wildcard h3/test/expected/ci-*.out) \
 	$(wildcard *.BAK) \
 	/tmp/extra-functions \
 	/tmp/excluded-functions \
-	test/regression.diffs test/regression.out test/results \
+	h3/test/regression.diffs h3/test/regression.out h3/test/results \
 	h3-*.zip
 
 # PGXS boilerplate
@@ -71,7 +71,7 @@ include $(PGXS)
 # Non-standard PGXS stuff below
 ###########################################################################
 
-$(OBJS): $(LIBH3_BUILD) src/extension.h
+$(OBJS): $(LIBH3_BUILD) h3/src/include/extension.h
 
 # targets for building H3 library internals
 $(LIBH3_SOURCE):
@@ -92,7 +92,7 @@ $(LIBH3_BUILD): $(LIBH3_SOURCE)
 	cmake --build $(LIBH3_BUILD) --target binding-functions
 
 # generate header file with extension version baked in
-src/extension.h: src/extension.in.h
+h3/src/include/extension.h: h3/src/include/extension.in.h
 	sed -e 's/@EXTVERSION@/$(EXTVERSION)/g' \
 		$< > $@
 
@@ -112,7 +112,7 @@ format: clean
 	pgindent
 
 docs/api.md: $(SQL_INSTALLS)
-	python .github/documentation/generate.py "sql/install/*" > $@
+	python .github/documentation/generate.py "h3/sql/install/*" > $@
 	npx doctoc $@
 
 # functions which we have decided not to provide bindings for
@@ -143,12 +143,12 @@ PRINT_FUNCFLAGS_SQL = "SELECT proname, proisstrict, provolatile, proparallel, pr
 PRINT_OPERATORS_SQL = "\do"
 
 # rules for testing the update path against full install
-test/sql/ci-install.sql: $(SQL_FULLINSTALL)
+h3/test/sql/ci-install.sql: $(SQL_FULLINSTALL)
 	echo $(PRINT_TYPES_SQL) > $@
 	echo $(PRINT_FUNCTIONS_SQL) >> $@
 	echo $(PRINT_FUNCFLAGS_SQL) >> $@
 	echo $(PRINT_OPERATORS_SQL) >> $@
-test/expected/ci-install.out: $(SQL_UPDATES)
+h3/test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -d pg_regress -c "CREATE EXTENSION postgis;"
@@ -174,9 +174,9 @@ ifndef ARCH_BOOL
 endif
 
 # rules for testing if arch determines pass by value/reference
-test/sql/ci-arch-$(ARCH).sql: $(SQL_FULLINSTALL)
+h3/test/sql/ci-arch-$(ARCH).sql: $(SQL_FULLINSTALL)
 	echo $(ARCH_SQL) > $@
-test/expected/ci-arch-$(ARCH).out: $(SQL_UPDATES)
+h3/test/expected/ci-arch-$(ARCH).out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -d pg_regress -c "CREATE EXTENSION postgis;"
@@ -186,7 +186,7 @@ test/expected/ci-arch-$(ARCH).out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE pg_regress;"
 
 # generate expected bindings from h3 generated binding function list
-test/expected/ci-bindings.out: $(LIBH3_BUILD)/binding-functions /tmp/excluded-functions
+h3/test/expected/ci-bindings.out: $(LIBH3_BUILD)/binding-functions /tmp/excluded-functions
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
 	echo "\\\echo '$(shell \
@@ -204,14 +204,14 @@ test/expected/ci-bindings.out: $(LIBH3_BUILD)/binding-functions /tmp/excluded-fu
 	psql -c "DROP DATABASE pg_regress;"
 
 # generate actual bindings from installed extension
-test/sql/ci-bindings.sql: test/expected/ci-install.out /tmp/extra-functions
+h3/test/sql/ci-bindings.sql: h3/test/expected/ci-install.out /tmp/extra-functions
 	echo "\\\echo '$(shell \
-		cat test/expected/ci-install.out \
+		cat h3/test/expected/ci-install.out \
 		| grep -o '^ h3_\w*' \
 		| sed -r 's/ \bh3_//g' \
 		| grep -v -x -F -f /tmp/extra-functions \
 		| sort | uniq \
 	)'" > $@
 
-ci: test/sql/ci-arch-$(ARCH).sql test/expected/ci-arch-$(ARCH).out test/sql/ci-install.sql test/expected/ci-install.out test/sql/ci-bindings.sql test/expected/ci-bindings.out
+ci: h3/test/sql/ci-arch-$(ARCH).sql h3/test/expected/ci-arch-$(ARCH).out h3/test/sql/ci-install.sql h3/test/expected/ci-install.out h3/test/sql/ci-bindings.sql h3/test/expected/ci-bindings.out
 .PHONY: ci format
