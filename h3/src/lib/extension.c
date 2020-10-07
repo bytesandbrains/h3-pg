@@ -30,6 +30,8 @@
 /* should only be in ONE file */
 PG_MODULE_MAGIC;
 
+PGDLLEXPORT Datum h3_get_extension_version(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_get_extension_version);
 
 /* Return version number for this extension (not main h3 lib) */

@@ -20,6 +20,11 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT Datum h3index_in(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3index_out(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3index_to_bigint(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum bigint_to_h3index(PG_FUNCTION_ARGS);
+
 /* conversion */
 PG_FUNCTION_INFO_V1(h3index_in);
 PG_FUNCTION_INFO_V1(h3index_out);

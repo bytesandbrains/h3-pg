@@ -23,6 +23,15 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT Datum h3_point_dist(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_hex_area(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_cell_area(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_edge_length(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_exact_edge_length(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_num_hexagons(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_res_0_indexes(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_pentagon_indexes(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_point_dist);
 PG_FUNCTION_INFO_V1(h3_hex_area);
 PG_FUNCTION_INFO_V1(h3_cell_area);

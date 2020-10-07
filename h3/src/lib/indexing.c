@@ -22,6 +22,10 @@
 #include "extension.h"
 #include <math.h>
 
+PGDLLEXPORT Datum h3_geo_to_h3(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_to_geo(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_to_geo_boundary(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_geo_to_h3);
 PG_FUNCTION_INFO_V1(h3_to_geo);
 PG_FUNCTION_INFO_V1(h3_to_geo_boundary);

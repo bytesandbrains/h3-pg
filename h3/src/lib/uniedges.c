@@ -23,6 +23,15 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT Datum h3_indexes_are_neighbors(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_h3_unidirectional_edge(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_unidirectional_edge_is_valid(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_origin_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_destination_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_h3_indexes_from_unidirectional_edge(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_h3_unidirectional_edges_from_hexagon(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_h3_unidirectional_edge_boundary(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_indexes_are_neighbors);
 PG_FUNCTION_INFO_V1(h3_get_h3_unidirectional_edge);
 PG_FUNCTION_INFO_V1(h3_unidirectional_edge_is_valid);

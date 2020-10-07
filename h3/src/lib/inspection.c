@@ -23,6 +23,13 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT Datum h3_get_resolution(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_base_cell(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_is_valid(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_is_res_class_iii(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_is_pentagon(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_get_faces(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_get_resolution);
 PG_FUNCTION_INFO_V1(h3_get_base_cell);
 PG_FUNCTION_INFO_V1(h3_is_valid);

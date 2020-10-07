@@ -27,6 +27,9 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT Datum h3_polyfill(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_set_to_multi_polygon(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_polyfill);
 PG_FUNCTION_INFO_V1(h3_set_to_multi_polygon);
 

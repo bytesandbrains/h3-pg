@@ -24,6 +24,14 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT Datum h3_k_ring(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_k_ring_distances(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_hex_ring(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_distance(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_line(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_experimental_h3_to_local_ij(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_experimental_local_ij_to_h3(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_k_ring);
 PG_FUNCTION_INFO_V1(h3_k_ring_distances);
 PG_FUNCTION_INFO_V1(h3_hex_ring);

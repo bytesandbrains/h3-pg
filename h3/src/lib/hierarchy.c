@@ -23,6 +23,12 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT Datum h3_to_parent(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_to_children(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_to_center_child(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_compact(PG_FUNCTION_ARGS);
+PGDLLEXPORT Datum h3_uncompact(PG_FUNCTION_ARGS);
+
 PG_FUNCTION_INFO_V1(h3_to_parent);
 PG_FUNCTION_INFO_V1(h3_to_children);
 PG_FUNCTION_INFO_V1(h3_to_center_child);
