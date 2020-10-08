@@ -1,0 +1,40 @@
+name: Linux
+
+on:
+  push:
+    branches: [cmake]
+  pull_request:
+    branches: [cmake]
+
+# https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        #config: [Release, Debug]
+        config: [Release]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install PostgreSQL server headers
+        run: |
+          sudo apt update
+          sudo apt-get install postgresql-server-dev-13
+
+      - name: Configure build
+        run: cmake -B build .
+
+      - name: Build
+        working-directory: build
+        run: cmake --build .
+
+      - name: Install
+        working-directory: build
+        run: sudo cmake --install . --component extension
+
+      - name: Test
+        working-directory: build
+        run: ctest --output-on-failure

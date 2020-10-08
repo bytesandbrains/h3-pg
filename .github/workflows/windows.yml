@@ -1,0 +1,36 @@
+name: Windows
+
+on:
+  push:
+    branches: [cmake]
+  pull_request:
+    branches: [cmake]
+
+# https://github.com/actions/virtual-environments/blob/main/images/win/Windows2019-Readme.md
+jobs:
+  tests:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        config: [Release, Debug]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure build
+        run: |
+          $env:PATH = 'C:/PROGRA~1/POSTGR~1/13/bin;' + $env:PATH
+          cmake -B build .
+
+      - name: Build
+        working-directory: build
+        run: cmake --build . --config ${{ matrix.config }}
+
+      - name: Install
+        working-directory: build
+        run: cmake --install . --component extension --config ${{ matrix.config }}
+
+      - name: Test
+        working-directory: build
+        run: ctest --output-on-failure --build-config ${{ matrix.config }}

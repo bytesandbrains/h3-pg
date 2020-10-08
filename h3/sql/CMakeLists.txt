@@ -14,7 +14,7 @@ set(INSTALL_SQL_FILES
         install/12-opclass_hash.sql
         install/20-extension.sql
         install/30-deprecated.sql
-        install/99-postgis.sql
+        #install/99-postgis.sql
 )
 
 set(UPDATE_SQL_FILES
