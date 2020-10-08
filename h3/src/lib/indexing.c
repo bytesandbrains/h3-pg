@@ -22,6 +22,8 @@
 #include "extension.h"
 #include <math.h>
 
+#define M_PI 3.14159265358979323846
+
 PGDLLEXPORT Datum h3_geo_to_h3(PG_FUNCTION_ARGS);
 PGDLLEXPORT Datum h3_to_geo(PG_FUNCTION_ARGS);
 PGDLLEXPORT Datum h3_to_geo_boundary(PG_FUNCTION_ARGS);
