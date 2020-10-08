@@ -10,11 +10,11 @@ if(WIN32)
 
   string(APPEND CMAKE_MODULE_LINKER_FLAGS " ws2_32.lib Version.lib")
   set(CMAKE_C_FLAGS "-D_CRT_SECURE_NO_WARNINGS")
-  include_directories(SYSTEM ${PG_INCLUDE_SERVER_DIR}/port/win32)
+  include_directories(SYSTEM ${PostgreSQL_INCLUDE_SERVER_DIR}/port/win32)
 
   if(MSVC)
     message(STATUS "is MSVC")
-    include_directories(SYSTEM ${PG_INCLUDE_SERVER_DIR}/port/win32_msvc)
+    include_directories(SYSTEM ${PostgreSQL_INCLUDE_SERVER_DIR}/port/win32_msvc)
   endif (MSVC)
 endif (WIN32)
 
