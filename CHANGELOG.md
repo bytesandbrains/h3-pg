@@ -26,7 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-- Update `h3` core library to `v3.7.1`
+- Update `h3` core library to `v3.7.2`
 
 </details>
 
