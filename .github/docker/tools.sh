@@ -17,7 +17,7 @@ function help {
 while getopts 'hbptu' o; do
 case "$o" in
 	b)	docker build -t $REPOSITORY/test:amd64 --build-arg ARCH=amd64 .
-      #docker build -t $REPOSITORY/test:i386  --build-arg ARCH=i386  .
+      docker build -t $REPOSITORY/test:i386  --build-arg ARCH=i386  .
       exit 1;;
 	p)	docker push $REPOSITORY/test:amd64
       docker push $REPOSITORY/test:i386
