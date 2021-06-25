@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Bytes & Brains
+ * Copyright 2019-2021 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,32 @@
 --| # PostGIS Functions
 
 --@ availability: 0.3.0
-CREATE OR REPLACE FUNCTION h3_geo_to_h3(geometry, resolution integer) RETURNS h3index
-    AS $$ SELECT h3_geo_to_h3($1::point, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_lat_lng_to_cell(geometry, resolution integer) RETURNS h3index
+    AS $$ SELECT h3_lat_lng_to_cell($1::point, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: 0.3.0
-CREATE OR REPLACE FUNCTION h3_geo_to_h3(geography, resolution integer) RETURNS h3index
-    AS $$ SELECT h3_geo_to_h3($1::geometry, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_lat_lng_to_cell(geography, resolution integer) RETURNS h3index
+    AS $$ SELECT h3_lat_lng_to_cell($1::geometry, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: 1.0.0
-CREATE OR REPLACE FUNCTION h3_to_geometry(h3index) RETURNS geometry
-  AS $$ SELECT ST_SetSRID(h3_to_geo($1)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_cell_to_geometry(h3index) RETURNS geometry
+  AS $$ SELECT ST_SetSRID(h3_cell_to_lat_lng($1)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: 1.0.0
-CREATE OR REPLACE FUNCTION h3_to_geography(h3index) RETURNS geography
-  AS $$ SELECT h3_to_geometry($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_cell_to_geography(h3index) RETURNS geography
+  AS $$ SELECT h3_cell_to_geometry($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: 1.0.0
-CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geometry(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geometry
-  AS $$ SELECT ST_SetSRID(h3_to_geo_boundary($1, $2)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_cell_to_geo_boundary_geometry(h3index, extend boolean DEFAULT FALSE) RETURNS geometry
+  AS $$ SELECT ST_SetSRID(h3_cell_to_boundary($1, $2)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: 1.0.0
-CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geography(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geography
-  AS $$ SELECT h3_to_geo_boundary_geometry($1, $2)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_cell_to_geo_boundary_geography(h3index, extend boolean DEFAULT FALSE) RETURNS geography
+  AS $$ SELECT h3_cell_to_geo_boundary_geometry($1, $2)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: 0.3.0
-CREATE OR REPLACE FUNCTION h3_polyfill(multi geometry, resolution integer) RETURNS SETOF h3index
-    AS $$ SELECT h3_polyfill(exterior, holes, resolution) FROM (
+CREATE OR REPLACE FUNCTION h3_polygon_to_cells(multi geometry, resolution integer) RETURNS SETOF h3index
+    AS $$ SELECT h3_polygon_to_cells(exterior, holes, resolution) FROM (
         SELECT 
             -- extract exterior ring of each polygon
             ST_MakePolygon(ST_ExteriorRing(poly))::polygon exterior,
@@ -59,20 +59,20 @@ CREATE OR REPLACE FUNCTION h3_polyfill(multi geometry, resolution integer) RETUR
         FROM (
             select (st_dump(multi)).geom as poly
         ) q_poly GROUP BY poly
-    ) h3_polyfill; $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+    ) h3_polygon_to_cells; $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 
 --@ availability: 0.3.0
-CREATE OR REPLACE FUNCTION h3_polyfill(multi geography, resolution integer) RETURNS SETOF h3index
-AS $$ SELECT h3_polyfill($1::geometry, $2) $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+CREATE OR REPLACE FUNCTION h3_polygon_to_cells(multi geography, resolution integer) RETURNS SETOF h3index
+AS $$ SELECT h3_polygon_to_cells($1::geometry, $2) $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 --| ## PostGIS casts
 
 --@ availability: 0.3.0
-CREATE CAST (h3index AS point) WITH FUNCTION h3_to_geo(h3index);
+CREATE CAST (h3index AS point) WITH FUNCTION h3_cell_to_lat_lng(h3index);
 
 --@ availability: 0.3.0
-CREATE CAST (h3index AS geometry) WITH FUNCTION h3_to_geometry(h3index);
+CREATE CAST (h3index AS geometry) WITH FUNCTION h3_cell_to_geometry(h3index);
 
 --@ availability: 0.3.0
-CREATE CAST (h3index AS geography) WITH FUNCTION h3_to_geography(h3index);
+CREATE CAST (h3index AS geography) WITH FUNCTION h3_cell_to_geography(h3index);
